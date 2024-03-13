@@ -3,9 +3,89 @@
 {% block title %} Home {% endblock %}
 
 {% block homeactive %} active {% endblock %}
+{% load static %}
+{% block css %}
+    <style>
+        /* Add your custom styles here */
+        body {
+            background-color: #f8f9fa;
+            /* Set background color */
+        }
+    
+        .header {
+            position: relative; /* Set position to relative to align image */
+            display: flex; /* Use flexbox to center content */
+            justify-content: center; /* Center content horizontally */
+            align-items: center; /* Center content vertically */
+            height: 300px; /* Set desired height */
+        }
 
-{% block css %} {% endblock %}
+    
+        .footer {
+            background: linear-gradient(to right, #4e54c8, #8f94fb);
+            /* Gradient background */
+            color: white;
+            /* Text color */
+            text-align: center;
+            /* Center align text */
+            padding: 20px 0;
+            /* Add padding */
+        }
+    </style>
+{% endblock %}
 
 {% block body %}
-    <h1>This is Home Page</h1>
+    <div class="header container  my-4">
+        <img src="{% static 'home/welcome.png' %}" alt="Welcome Image"  style="height: 95%; width: 65%;">
+    </div>
+    
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-8 offset-md-2 text-center">
+                <p style="text-align: justify;">Dive into a world of knowledge and inspiration as you explore our collection of insightful
+                    articles, captivating stories, and practical tips covering a wide range of topics. From the latest trends in
+                    technology to wanderlust-inducing travel experiences, from wellness and lifestyle advice to creative pursuits
+                    and beyond, there's something here for everyone. Whether you're seeking guidance, entertainment, or simply a
+                    moment of inspiration, we've curated a diverse array of content to spark your curiosity and enrich your life.
+                    Join us on this journey of exploration and discovery - your next adventure awaits!</p>
+                <a href="/blog" class="btn btn-primary btn-lg">Get Started</a>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-md-4">
+                <h3>Latest Articles</h3>
+                <ul class="list-group">
+                    <li class="list-group-item">Article 1</li>
+                    <li class="list-group-item">Article 2</li>
+                    <li class="list-group-item">Article 3</li>
+                </ul>
+            </div>
+            <div class="col-md-4">
+                <h3>Popular Topics</h3>
+                <ul class="list-group">
+                    <li class="list-group-item">Topic 1</li>
+                    <li class="list-group-item">Topic 2</li>
+                    <li class="list-group-item">Topic 3</li>
+                </ul>
+            </div>
+            <div class="col-md-4">
+                <h3>Subscribe</h3>
+                <p>Subscribe to our newsletter to receive updates on new articles and stories.</p>
+                <form>
+                    <div class="mb-3">
+                        <input type="email" class="form-control" placeholder="Enter your email">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Subscribe</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <footer class="footer mt-5">
+        <div class="container">
+            <p>&copy; 2024 My Blog. All rights reserved.</p>
+        </div>
+    </footer>
+
+
 {% endblock %}
