@@ -2,8 +2,69 @@
 
 {% block title %} Contact Us {% endblock %}
 
+{% block contactactive %} active {% endblock %}
+
 {% block css %} {% endblock %}
 
 {% block body %}
-<h1>This is Contact Page</h1>
+
+
+
+
+
+<div class="container my-3">
+    <!-- Alert Button For Showing the Messages-->
+    {% if messages %} <!-- main condition-->
+        {% for message in messages %}
+            {% if message.tags == 'error' %}
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <strong>Hello!</strong> {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% else %}
+                <div {% if message.tags %} class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert" {% endif %}>
+                    <strong>Hello!</strong> {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endif %}
+        {% endfor %}
+    {% endif %} <!-- END main condition-->
+
+    <form id="contentForm" method="post" action="/contact/"> {% csrf_token %}
+        <div class="">
+            <div class="card">
+                <h3 class="card-header">Contact Us - Write a detailed description.</h3>
+                <div class="card-body">
+                    <div class="container">
+
+                        <div class="mb-3">
+                            <label for="fullname" class="form-label">Full Name</label>
+                            <input type="text" name="fullname" class="form-control" id="fullname" placeholder="Enter Your Full Name" autocomplete="off" required>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" name="email" class="form-control" placeholder="Enter Your Valid Email Address" id="email" autocomplete="off" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="phone" class="form-label">Phone</label>
+                                <input type="phone" name="phone" class="form-control" id="phone" autocomplete="off" required>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="exampleFormControlTextarea1" class="form-label">How May We Help You</label>
+                            <textarea name="content" class="form-control" id="exampleFormControlTextarea1" rows="3"
+                                required></textarea>
+                            <!-- <input type="text" name="t_description" class="form-control"  placeholder="Enter Your Work Title" required> -->
+                        </div>
+                        <button class="btn btn-primary" type="submit"><i class="bi bi-plus-lg"></i> Submit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form> <!--END Data Entry Form-->
+
+
+
 {% endblock %}
