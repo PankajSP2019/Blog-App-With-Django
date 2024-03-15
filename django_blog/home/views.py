@@ -4,13 +4,18 @@ from django.contrib import messages
 
 # Models
 from .models import Contact_H
+from blog.models import Post
 
 
 # Create your views here.
 
 
 def home(request):
-    return render(request, 'home/home.html')
+
+    # To show latest blog in home page
+    last_three_blogs = Post.objects.all().order_by('-pno')[:3]
+    print(last_three_blogs)
+    return render(request, 'home/home.html', {'latest_blog': last_three_blogs})
 
 
 def contact(request):
@@ -42,3 +47,25 @@ def contact(request):
 
 def about(request):
     return render(request, 'home/about.html')
+
+
+def search(request):
+    query = request.GET['query']
+    if len(query) > 100:
+        # Create an Empty Queryset Object
+        allpost = Post.objects.none()
+    else:
+        # Search in Title, Author, Content and Category
+        allpost_title = Post.objects.filter(title__icontains=query)
+        allpost_author = Post.objects.filter(author__icontains=query)
+        allpost_content = Post.objects.filter(content__icontains=query)
+        allpost_category = Post.objects.filter(category__icontains=query)
+
+        # Marge All Searching result
+        allpost = allpost_title.union(allpost_author, allpost_content, allpost_category)
+
+    if allpost.count() == 0:
+        messages.warning(request, "No Result Found")
+
+    params = {'allpost': allpost, 'query': query}
+    return render(request, "home/search.html", params)

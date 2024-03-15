@@ -18,12 +18,13 @@ class Post(models.Model):
     ]
 
     pno = models.AutoField(primary_key=True)
-    title = models.CharField(max_length=500)
+    title = models.CharField(max_length=150)
     author = models.CharField(max_length=100)
     category = models.CharField(max_length=100, blank=True, choices=CATEGORY_CHOICES)
     slug = models.CharField(max_length=700, blank=True, null=True)
     timestamp = models.DateField(blank=True)
     content = models.TextField()
+    summary = models.CharField(max_length=500)
     image = models.ImageField(upload_to="blog/images", default="")
 
     # For Automatic save the slug from title
