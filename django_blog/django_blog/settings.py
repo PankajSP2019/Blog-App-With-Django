@@ -26,11 +26,13 @@ STATIC_URL = '/static/'
 # These Settings added by Pankaj Kumar Das , to access the static file
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),  # Main static directory
-    os.path.join(BASE_DIR, 'home', 'static'),  # Static directory for home app
-    os.path.join(BASE_DIR, 'blog', 'static'),  # Static directory for blog app
+    # os.path.join(BASE_DIR, 'home', 'static'),  # Static directory for home app
+    # os.path.join(BASE_DIR, 'blog', 'static'),  # Static directory for blog app
 ]
 
-
+# These Setting Added bby Pankaj Kumar Das, to Managing Media
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/

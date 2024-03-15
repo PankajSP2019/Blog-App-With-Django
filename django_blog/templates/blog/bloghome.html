@@ -7,5 +7,33 @@
 {% block css %} {% endblock %}
 
 {% block body %}
-<h1>This is Blog-Home Page</h1>
+
+    <div class="container  my-4">
+        <div class="row mb-2">
+            {% for post in allpost %}
+            <div class="col-md-6">
+                <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative"
+                    style="height: 350px;">
+                    <div class="col p-4 d-flex flex-column position-static">
+                        <strong class="d-inline-block mb-2 text-primary-emphasis ">{{post.category}}</strong>
+                        <h4 class="mb-0">{{post.title}}</h4>
+                        <div class="mb-1 text-body-secondary">{{post.timestamp}}</div>
+                        <p class="card-text mb-auto" style="text-align: justify;">{{ post.content|truncatechars:200 }}</p>
+                        <a href="/blog/{{post.slug}}">Continue reading</a>   
+                    </div>
+                    <div class="col-auto d-none d-lg-block">
+                        <img src="/media/{{ post.image }}" alt="Thumbnail" width="200px" height="250px" style="object-fit: cover;">
+                    </div>
+                </div>
+            </div>
+            {% if forloop.counter|divisibleby:2 and forloop.counter > 0 and not forloop.last %}
+        </div>
+        <div class="row my-2">
+            {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+
+
+    
 {% endblock %}
