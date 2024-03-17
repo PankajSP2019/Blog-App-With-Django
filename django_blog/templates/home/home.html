@@ -6,35 +6,42 @@
 {% load static %}
 {% block css %}
     <style>
-        /* Add your custom styles here */
+        
         body {
             background-color: #f8f9fa;
-            /* Set background color */
+            
         }
     
         .header {
-            position: relative; /* Set position to relative to align image */
-            display: flex; /* Use flexbox to center content */
-            justify-content: center; /* Center content horizontally */
-            align-items: center; /* Center content vertically */
-            height: 300px; /* Set desired height */
+            position: relative; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center;
+            height: 300px; 
         }
 
     
         .footer {
             background: linear-gradient(to right, #4e54c8, #8f94fb);
-            /* Gradient background */
             color: white;
-            /* Text color */
             text-align: center;
-            /* Center align text */
             padding: 20px 0;
-            /* Add padding */
         }
     </style>
 {% endblock %}
 
 {% block body %}
+    <div class="container">
+        <!-- Alert Button For Showing the Messages-->
+        {% if messages %} <!-- main condition-->
+            {% for message in messages %}
+                    <div {% if message.tags %} class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert" {% endif %}>
+                        <strong>Hello!</strong> {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+            {% endfor %}
+        {% endif %} <!-- END main condition-->
+    </div>
     <div class="header container  my-4">
         <img src="{% static 'home/welcome.png' %}" alt="Welcome Image"  style="height: 95%; width: 65%;">
     </div>

@@ -16,6 +16,15 @@ import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# For Email Verification and Sending Email -  Added By Pankaj Kumar Das
+from .email_info import *
+EMAIL_USE_TLS = EMAIL_USE_TLS
+EMAIL_HOST = EMAIL_HOST
+EMAIL_HOST_USER = EMAIL_HOST_USER
+EMAIL_HOST_PASSWORD = EMAIL_HOST_PASSWORD
+EMAIL_PORT = EMAIL_PORT
+
+
 # Changing Messages Error Tag -  Added By Pankaj Kumar Das
 from django.contrib.messages import constants as messages
 MESSAGE_TAGS = {

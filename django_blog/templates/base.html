@@ -15,9 +15,6 @@
 </head>
 
 <body>
-
-    
-
     <!-- Nav Bar Start -->
     <nav class="navbar navbar-expand-lg bg-primary bg-body-tertiary" data-bs-theme="dark">
         <div class="container-fluid">
@@ -46,10 +43,109 @@
                     <input class="form-control me-2" name="query" id="query" type="search" placeholder="Search" aria-label="Search">
                     <button class="btn btn-outline-success" type="submit">Search</button>
                 </form>
+
+                <!-- User Authentication check will be here -->
+
+                <!-- Register/Login trigger modal -->
+                <div class="mx-2">
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop-register">
+                    Register
+                    </button>
+
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop-login">
+                    Login
+                    </button>
+                </div>
+                
             </div>
         </div>
     </nav>
     <!-- Nav Bar END -->
+
+    <!--  Modal --> 
+    <!--Registration Modal -->
+    <div class="modal fade" id="staticBackdrop-register" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Registration</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="/register/" method="post">
+                    {% csrf_token %} 
+                    <div class="modal-body">
+
+                        <div class="row">
+                            <div class="col-md-6 mb-2">
+                                <div class="form-outline">
+                                    <label for="fname" class="form-label">First Name</label>
+                                    <input type="text" class="form-control" name="fname" id="fname" placeholder="Place Your First Name" required>  
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <div class="form-outline">
+                                    <label for="lname" class="form-label">Last Name</label>
+                                    <input type="text" class="form-control" name="lname" id="lname" placeholder="Place Your Last Name" required>  
+                                </div>
+                            </div>
+                        
+                        <div class="form-outline mb-2">
+                            <label for="user_name" class="form-label">User Name</label>
+                            <input type="text" class="form-control" name="user_name" id="user_name" placeholder="Must Be Alphanumeric & Lower Case & Length Greater Than 8." required>
+                        </div>
+                        <div class="form-outline mb-2">
+                            <label for="user_name" class="form-label">Email</label>
+                            <input type="email" class="form-control" name="email" id="email" placeholder="Place Your Email(Valid Email)" required>
+                        </div>
+                        <div class="form-outline mb-2">
+                            <label for="password1" class="form-label">Password</label>
+                            <input type="password" name="password1" class="form-control" id="password1" placeholder="Place Your Password" required>
+                        </div>
+                        <div class="form-outline mb-2">
+                            <label for="password2" class="form-label">Confirm Password</label>
+                            <input type="password" name="password2" class="form-control" id="password2" placeholder="Retype Your Password" required>
+                        </div>
+                    </div>       
+                </div>
+                    <div class="modal-footer">
+                        {% comment %} <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> {% endcomment %}
+                        <button type="submit" class="btn btn-primary">Register</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!--Registration Modal END-->
+
+    <!--Login Modal -->
+    <div class="modal fade" id="staticBackdrop-login" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Login</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="/login/" method="post">
+                    {% csrf_token %} 
+                    <div class="modal-body">
+                        <label for="userName" class="form-label">User Name</label>
+                        <input type="text" class="form-control" name="userName" id="userName" placeholder="Place Your Username(Alphanumeric)" required>
+
+                        <label for="userPassword" class="form-label">Password</label>
+                        <input type="password" name="userPassword" class="form-control" id="userPassword" placeholder="Place Your Password" required>
+                    </div>
+                    <div class="modal-footer">
+                        {% comment %} <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> {% endcomment %}
+                        <button type="submit" class="btn btn-primary">Login</button>
+                    </div>
+                </form>
+                
+            </div>
+        </div>
+    </div>
+    <!--Login Modal END-->
 
    
 
