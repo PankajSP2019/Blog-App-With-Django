@@ -1,0 +1,23 @@
+{% autoescape off  %}
+
+Dear {{name}},
+
+Welcome to BlogSphere, your new creative space for sharing thoughts, stories, and insights with the world! We're thrilled to have you join our community of passionate bloggers.
+
+To get started, we need to verify your email address. Please click on the link below to activate your BlogSphere account:
+
+Confirmation Link : http://{{ domain }}{% url 'Activate' uidb64=uid token=token %}
+
+Once your account is activated, you'll have full access to all the features and tools BlogSphere has to offer. Whether you're a seasoned writer or just starting out, BlogSphere is here to empower your voice and inspire your audience.
+
+
+Thank you for choosing BlogSphere. We can't wait to see what you create.
+
+Happy blogging!
+
+Warm regards,
+Pankaj Kumar Das
+Developer
+BlogSphere Team
+
+{% endautoescape %}

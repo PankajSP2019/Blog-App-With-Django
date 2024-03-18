@@ -9,6 +9,9 @@
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 
+    <!-- Dropdown Button is not working, after add this like it properly working -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.min.js" integrity="sha384-Atwg2Pkwv9vp0ygtn1JAojH0nYbwNJLPhwyoVbhoPwBhjQPR5VtM2+xf0Uwh9KtT" crossorigin="anonymous"></script>
+
 
     
     {% block css %} {% endblock %}
@@ -39,23 +42,44 @@
                         <a class="nav-link {% block blogactive  %}{% endblock %}" href="/blog">Blog</a>
                     </li>
                 </ul>
-                <form method="get" action="/search/" class="d-flex" role="search">
+
+                <form method="get" action="/search/" class="d-flex mx-3" role="search">
                     <input class="form-control me-2" name="query" id="query" type="search" placeholder="Search" aria-label="Search">
                     <button class="btn btn-outline-success" type="submit">Search</button>
                 </form>
 
                 <!-- User Authentication check will be here -->
 
+                {% if user.is_authenticated %}
+                    <div class="mx-2" id="navbarNavDarkDropdown">
+                    <ul class="navbar-nav">
+                        <li class="nav-item dropdown">
+                        <button class="btn btn-dark dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                            Welcome - {{user.username}}
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-dark">
+                            <li><a class="dropdown-item" href="/logout">Logout</a></li>
+                        </ul>
+                        </li>
+                    </ul>
+                    </div>  
+                {% else %}
                 <!-- Register/Login trigger modal -->
-                <div class="mx-2">
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop-register">
-                    Register
-                    </button>
+                    <div class="mx-2">
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop-register">
+                        Register
+                        </button>
 
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop-login">
-                    Login
-                    </button>
-                </div>
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop-login">
+                        Login
+                        </button>
+                    </div>
+                {% endif %}
+        </div>
+      </li>
+      </ul>
+
+                
                 
             </div>
         </div>
@@ -160,6 +184,8 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
         integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
         crossorigin="anonymous"></script>
+
+
 
 
 </body>

@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib import messages
 from django.contrib.auth.models import User
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 
 # Models
 from .models import Contact_H
@@ -59,6 +61,10 @@ def about(request):
 
 def search(request):
     query = request.GET['query']
+
+    if len(query) == 0:
+        return redirect('blogHome')
+
     if len(query) > 100:
         # Create an Empty Queryset Object
         allpost = Post.objects.none()
@@ -88,7 +94,7 @@ def register(request):
         pass1 = request.POST['password1']
         pass2 = request.POST['password2']
 
-        print(fname, lname, user_name, email, pass1, pass2)
+        # print(fname, lname, user_name, email, pass1, pass2)
 
         # Validation the form
         if len(user_name) < 8:
@@ -110,7 +116,7 @@ def register(request):
             return redirect('Home')
 
         # user create
-        user = User.objects.create_user(username=user_name, email=email, password=pass1)
+        user = User.objects.create_user(username=user_name.lower(), email=email, password=pass1)
         user.first_name = fname
         user.last_name = lname
         # Initially this user account will Deactivate
@@ -118,15 +124,51 @@ def register(request):
         user.is_active = False
         user.save()
 
-        # Send Welcome Email
+        # Send Welcome Email & Email Verification
+        current_site = get_current_site(request)
+        subject = "Welcome to BlogSphere - Activate Your Account Now!."
+        message = render_to_string('home/email_confirmation.html', {
+            'name': f"{user.first_name} {user.last_name}",
+            'domain': current_site.domain,
+            'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+            'token': generate_token.make_token(user)
+        })
+        email = EmailMessage(
+            subject,
+            message,
+            settings.EMAIL_HOST_USER,
+            [user.email]
+        )
+        email.fail_silently = True
+        email.send()
 
-        # email verification
-
-        messages.success(request, "Your Account Successfully Created.Please Check your email,and verified you account.")
+        messages.success(request, "Your Account Successfully Created.Please Check your email,and verified(Active) you "
+                                  "account.")
         return redirect('Home')
 
     else:
         return HttpResponse("404 - You are not allowed.")
+
+
+def activate_user(request, uidb64, token):
+    try:
+        uid = force_str(urlsafe_base64_decode(uidb64))
+        user = User.objects.get(pk=uid)
+    except Exception as e:
+        user = None
+
+    if user is not None and generate_token.check_token(user, token):
+        if user.is_active:
+            messages.warning(request, "Your Account is Already Activated.")
+            return redirect('Home')
+        else:
+            user.is_active = True
+            user.save()
+            messages.success(request, "Your Account is Activated. Now, You Can Login To Your Account With User Name & "
+                                      "Password.. ")
+            return redirect('Home')
+    else:
+        return HttpResponse(f"Something Went Wrong, Please Inform Our Admin.")
 
 
 def logged_in(request):
@@ -135,11 +177,22 @@ def logged_in(request):
         password = request.POST['userPassword']
 
         # Authenticate
-
-        # Login
-
-        print(username, password)
-
-        return redirect('Home')
+        user = authenticate(username=username, password=password)
+        if user is not None:
+            # Login
+            login(request, user)
+            messages.success(request, "Successfully Logged In...")
+            return redirect('Home')
+        else:
+            messages.error(request, "Wrong Credential, Please Try Again..")
+            return redirect('Home')
+        # print(username, password)
     else:
         return HttpResponse('404 - You Are Not Allowed')
+
+
+@login_required(login_url="/")
+def logout_blog(request):
+    logout(request)
+    messages.success(request, "Successfully Logged Out, Thank You.")
+    return redirect('Home')
