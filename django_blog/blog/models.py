@@ -1,10 +1,11 @@
 from django.db import models
+from django.contrib.auth.models import User
+from django.utils.timezone import now
 
 
 # Create your models here.
 
 class Post(models.Model):
-
     # For Category Choice Field
     CATEGORY_CHOICES = [
         ('Tech', 'Tech'),
@@ -36,3 +37,18 @@ class Post(models.Model):
 
     def __str__(self):
         return f"(PostID - {self.pno}) - (Title - {self.title})"
+
+
+# For Commenting In The Comment
+
+class BlogComment(models.Model):
+    cno = models.AutoField(primary_key=True)
+    comment = models.TextField(max_length=500)
+    user = models.ForeignKey(User,
+                             on_delete=models.CASCADE)  # If the User is deleted , related comment will also delete
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True)
+    timestamp = models.DateTimeField(default=now)
+
+    def __str__(self):
+        return f"(CID - {self.cno} PostID - {self.post.pno}) - (user - {self.user.username})  comment - {self.comment[:50]}"

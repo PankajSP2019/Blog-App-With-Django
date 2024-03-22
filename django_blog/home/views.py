@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
@@ -144,7 +144,9 @@ def register(request):
 
         messages.success(request, "Your Account Successfully Created.Please Check your email,and verified(Active) you "
                                   "account.")
-        return redirect('Home')
+        # return redirect('Home')
+        # It Redirect to the Same page From Where This Request Call
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
     else:
         return HttpResponse("404 - You are not allowed.")
@@ -182,10 +184,14 @@ def logged_in(request):
             # Login
             login(request, user)
             messages.success(request, "Successfully Logged In...")
-            return redirect('Home')
+            #  return redirect('Home')
+            # It Redirect to the Same page From Where This Request Call
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
         else:
             messages.error(request, "Wrong Credential, Please Try Again..")
-            return redirect('Home')
+            # return redirect('Home')
+            # It Redirect to the Same page From Where This Request Call
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
         # print(username, password)
     else:
         return HttpResponse('404 - You Are Not Allowed')
@@ -195,4 +201,6 @@ def logged_in(request):
 def logout_blog(request):
     logout(request)
     messages.success(request, "Successfully Logged Out, Thank You.")
-    return redirect('Home')
+    #  return redirect('Home')
+    # It Redirect to the Same page From Where This Request Call
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))

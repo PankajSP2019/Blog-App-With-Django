@@ -21,6 +21,13 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 
+# For Modify Admin Panel
+admin.site.site_header = "Blog Sphere Admin Panel"
+admin.site.site_title = "Blog Sphere"
+admin.site.index_title = "Blog Sphere Administration"
+
+
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('home.urls')),  # Home app

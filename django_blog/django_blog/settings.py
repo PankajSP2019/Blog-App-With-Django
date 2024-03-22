@@ -64,6 +64,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.humanize',  # For Display the date time like - > now, 2 hours ago
     'blog',
     'home'
     # 'blog.apps.BlogConfig'
