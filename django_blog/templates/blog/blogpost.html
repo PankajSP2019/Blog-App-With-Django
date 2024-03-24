@@ -2,109 +2,190 @@
 
 {% block title %} Blog-Post {% endblock %}
 
-{% block css %} 
-    <style>
+{% block css %}
+<style>
+    .content {
+        overflow-wrap: anywhere;
+        text-align: justify;
 
-        .content {    
-          overflow-wrap: anywhere; 
-          text-align: justify;
-          
-        }
+    }
 
-        #comment {
+    #comment {
         border: none;
         border-bottom: 1px solid black;
         background-color: none;
         outline: 0;
         font-size: 18px;
-        max-width: 500px;
-        width: 500px;
+        max-width: 100%;
+        width: 100%;
         height: 35px;
-      }
-
-    #comment:focus {
-    border: none;
-    border-bottom: 1px solid black;
-    background-color: none;
-    outline: 0;
-    max-width: 500px;
-    width: 500px;
-    height: 35px;
     }
 
-    </style>
+    #comment:focus {
+        border: none;
+        border-bottom: 1px solid black;
+        background-color: none;
+        outline: 0;
+        max-width: 100%;
+        width: 100%;
+        height: 35px;
+    }
+
+    #reply {
+        border: none;
+        border-bottom: 1px solid black;
+        background-color: none;
+        outline: 0;
+        font-size: 18px;
+        width: 100%; 
+        max-width: 100%; 
+        height: 35px;
+    }
+
+    #reply:focus {
+        border: none;
+        border-bottom: 1px solid black;
+        background-color: none;
+        outline: 0;
+        max-width: 100%; /* Change to percentage */
+        width: 100%; /* Change to percentage */
+        height: 35px;
+    }
+
+</style>
 {% endblock %}
 
 {% block body %}
 
 {% load static %}
-{% load humanize %} 
+{% load humanize %}
+{% load extras %}
 
-<div class="container my-2 mx-2" >
+<div class="container my-2 mx-2">
     <div class="row g-5">
         <div class="col-md-8">
 
-            <article class="my-4 blog-post border-bottom">
+            <article class="my-4 blog-post border-bottom ">
                 <h2 class="display-5 link-body-emphasis mb-1">{{post.title}}</h2>
                 <p class="blog-post-meta my-2">{{post.timestamp}} by <a href="#">{{post.author}}</a></p>
             </article>
 
-            <article class="my-4 blog-post border-bottom">
-                <p class="blog-post-meta" style="text-align: justify;">{{post.content}}</p>
+            <article class="my-4 blog-post border-bottom mx-2">
+                <p class="" style="text-align: justify;">{{post.content|safe}}</p>
             </article>
-            
+
             <!-- For comment -->
             <div>
                 <h2 class="border-bottom p-2">Comments({{comments.count}})</h2>
                 <div class="my-3 mb-3">
-                    {% if messages %} <!-- main condition-->
-                        {% for message in messages %}
-                                <div {% if message.tags %} class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert" {% endif %}>
-                                    <strong>Hello!</strong> {{ message }}
-                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                                </div>
-                        {% endfor %}
-                    {% endif %} <!-- END main condition-->
+                    {% if messages %}
+                    <!-- main condition-->
+                    {% for message in messages %}
+                    <div {% if message.tags %} class="alert alert-{{ message.tags }} alert-dismissible fade show"
+                        role="alert" {% endif %}>
+                        <strong>Hello!</strong> {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    {% endfor %}
+                    {% endif %}
+                    <!-- END main condition-->
                 </div>
 
                 {% if user.is_authenticated %}
-                    <!-- Post Comment -->
-                    <form action="/blog/commentpost/" method="post">
-                        {% csrf_token %}
-                        <div class="my-4 ms-3">
-                            <input type="text" name="comment" id="comment" placeholder="Your Valueable Comment." required autocomplete="off"> <br>
-                            <input type="hidden" name="post_pno" value="{{post.pno}}" >
-                            <button type="submit" class="btn btn-primary btn-sm my-2">Comment</button>  
-                        </div>                         
-                    </form>
-                {% else %}
-                    <div  class="alert alert-warning alert-dismissible fade show" role="alert" >
-                        <strong>Please Logged In, For Post Your Valueable Comment.</strong>
-                        <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#staticBackdrop-login">Login</button> 
+                <!-- Post Comment -->
+                <form action="/blog/commentpost/" method="post">
+                    {% csrf_token %}
+                    <div class="my-4 ms-3">
+                        <input type="text" name="comment" id="comment" placeholder="Your Valueable Comment." required
+                            autocomplete="off" style="font-size: 17px;"> <br>
+                        <input type="hidden" name="post_pno" value="{{post.pno}}">
+                        <input type="hidden" name="parentPno" value="">
+                        <button type="submit" class="btn btn-primary btn-sm my-2">Comment</button>
                     </div>
+                </form>
+                {% else %}
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    <strong>Please Logged In, For Post Your Valueable Comment.</strong>
+                    <button class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                        data-bs-target="#staticBackdrop-login">Login</button>
+                </div>
                 {% endif %}
 
-                
+
 
                 <!-- Show Comments -->
                 {% for comment in comments %}
-                    <div class="row my-3 mx-2">
-                        <div class="col-md-1 ">
-                            <img src="{%static 'blog/user.png' %}" class="rounded mx-auto d-block w-100 p-1 " alt="image">
+                <div class="row my-3 mx-2">
+                    <div class="col-md-1 ">
+                        <img src="{%static 'blog/user.png' %}" class="rounded mx-auto d-block w-100 p-1 " alt="image">
+                    </div>
+                    <div class="col-md-11">
+                        <b>{{comment.user.username}}</b> <span
+                            class="badge text-bg-secondary">{{comment.timestamp|naturaltime}}</span>
+                        <div class="content my-1">
+                            {{comment.comment}}
                         </div>
-                        <div class="col-md-11">
-                            <b>{{comment.user.username}}</b> <span class="badge text-bg-secondary">{{comment.timestamp|naturaltime}}</span>
-                            <div class="content my-1">
-                                {{comment.comment}}
+
+                        <!-- For Reply -->
+                        {% if user.is_authenticated %}
+                            <button class="btn btn btn-outline-secondary rounded-pill border-0" type="button"
+                                data-bs-toggle="collapse"
+                                data-bs-target="#replyBox{{comment.cno}}" aria-expanded="false"
+                                aria-controls="replyBox{{comment.cno}}">
+                                <b>Reply</b>
+                            </button>
+                            <!-- Collapse Start -->
+                            <div class="collapse my-2" id="replyBox{{comment.cno}}">
+                                <div class="card card-body w-75">
+                                    <!-- Post Reply Form -->
+                                    <form action="/blog/commentpost/" method="post">
+                                        {% csrf_token %}
+                                        <div class="ms-3">
+                                            <input type="text" name="comment" id="reply" placeholder="Your Valueable Reply." required autocomplete="off" style="font-size: 17px;"> <br>              
+                                            <input type="hidden" name="post_pno" value="{{post.pno}}">
+                                            <input type="hidden" name="parentPno" value="{{comment.cno}}">
+                                            <button type="submit" class="btn btn-primary btn-sm my-2">Reply</button>
+                                            <!-- For Close the Collapse -->
+                                            <button class="btn btn-secondary btn-sm" type="button" data-comment-id="{{comment.cno}}"
+                                                onclick="closeCollapse(this)">
+                                                Close
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                    {% else %}
+                        <button class="btn btn btn-outline-secondary disabled rounded-pill border-0" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#replyBox{{comment.cno}}" aria-expanded="false" aria-controls="replyBox{{comment.cno}}">
+                            <b>Reply</b>
+                        </button>
+                    {% endif %}
+
+                    <!-- Show Reply -->
+                    <div class="replies">
+                        <!-- get_val is our custom made template tags location: blog/templatetags/extras.py -->
+                        {% for reply in reply_dict|get_val:comment.cno %}
+                        <div class="row gx-0 mx-0 my-2 ">
+                            <div class="col-md-1 ">
+                                <img src="{%static 'blog/user.png' %}" class="rounded mx-auto d-block w-75 p-1 " alt="image">
+                            </div>
+                            <div class="col-md-11">
+                                <b>{{reply.user.username}}</b> <span class="badge text-bg-secondary">{{reply.timestamp|naturaltime}}</span>
+                                <div class="content my-1">
+                                    {{reply.comment}}
+                                </div>
                             </div>
                         </div>
+                        {% endfor %}
                     </div>
+                    </div>
+                </div>
                 {% endfor %}
-                
+
             </div>
-    
+
         </div>
-    
+
         <div class="col-md-4 ">
             <div class="position-sticky my-2" style="top: 2rem;">
                 <div class="p-4 mb-3 bg-body-tertiary rounded">
@@ -113,11 +194,12 @@
                 </div>
 
                 <div class="p-4">
-                    <img src="/media/{{ post.image }}" alt="Thumbnail" width="300px" height="350px" style="object-fit: cover;">
+                    <img src="/media/{{ post.image }}" alt="Thumbnail" width="300px" height="350px"
+                        style="object-fit: cover;">
                 </div>
-    
-    
-    
+
+
+
                 <div class="p-4">
                     <h4 class="fst-italic">Elsewhere</h4>
                     <ol class="list-unstyled">
@@ -130,5 +212,18 @@
         </div>
     </div>
 </div>
+
+
+
+{% endblock %}
+
+{% block script %} 
+    <script>
+        function closeCollapse(button) {
+            var commentId = button.getAttribute('data-comment-id');
+            var collapseId = "#replyBox" + commentId;
+            $(collapseId).collapse('hide');
+        }
+    </script>
 
 {% endblock %}
