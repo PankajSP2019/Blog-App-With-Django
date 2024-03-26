@@ -1,6 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils.timezone import now
+
+from tinymce.models import HTMLField
+
 # For Custom Template Tags
 from .templatetags import extras
 
@@ -27,7 +30,7 @@ class Post(models.Model):
     slug = models.CharField(max_length=700, blank=True, null=True)
     timestamp = models.DateField(blank=True)
     content = models.TextField()
-    summary = models.CharField(max_length=500)
+    summary = models.TextField()
     image = models.ImageField(upload_to="blog/images", default="")
 
     # For Automatic save the slug from title

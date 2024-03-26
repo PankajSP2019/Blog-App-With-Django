@@ -204,3 +204,8 @@ def logout_blog(request):
     #  return redirect('Home')
     # It Redirect to the Same page From Where This Request Call
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+
+
+def check_tiny(request):
+    return render(request, "tinyMCE_example.html")

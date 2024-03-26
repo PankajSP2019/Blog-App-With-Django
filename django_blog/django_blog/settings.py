@@ -31,7 +31,7 @@ MESSAGE_TAGS = {
     messages.ERROR: 'danger'
 }
 STATIC_URL = '/static/'
-
+STATIC_ROOT = '/static/'
 # These Settings added by Pankaj Kumar Das , to access the static file
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),  # Main static directory
@@ -66,7 +66,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.humanize',  # For Display the date time like - > now, 2 hours ago
     'blog',
-    'home'
+    'home',
+    # 'tinymce'
     # 'blog.apps.BlogConfig'
     # 'home.apps.HomeConfig'
 ]

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TinyMCE Test</title>
+    <!-- Place the first <script> tag in your HTML's <head> -->
+    <script src="https://cdn.tiny.cloud/1/nlqp8tthxp2bcdc48fll72m1cjiliwnttuy4ae0g5liarklk/tinymce/7/tinymce.min.js"
+        referrerpolicy="origin"></script>
+</head>
+<body>
+    
+    
+    <!-- Place the following <script> and <textarea> tags your HTML's <body> -->
+    <script>
+        tinymce.init({
+            selector: '#my-content',
+            height:500,
+            plugins: 'anchor preview autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed linkchecker a11ychecker tinymcespellchecker permanentpen powerpaste advtable advcode editimage advtemplate mentions tableofcontents footnotes mergetags autocorrect typography inlinecss markdown code',
+            toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | preview',
+            menu: {
+                code: { title: 'Code', items: 'code' },
+                edit: { title: 'Edit', items: 'undo, redo, selectall' }
+            },
+            menubar: 'file edit view insert tools table code'
+            
+        });
+    </script>
+    <textarea id="my-content">
+      Welcome to TinyMCE!
+    </textarea>
+    <br>
+    <button id="bt">Generate Code</button>
+    <div id="myHtml"></div>
+
+
+    <!-- Get the converted The Text In Html -->
+    <script>
+        bt.addEventListener('click', (e)=>{
+            myHtml.innerText = tinymce.get('my-content').getContent();
+        });
+    </script>
+    
+</body>
+</html>

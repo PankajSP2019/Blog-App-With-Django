@@ -32,4 +32,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('home.urls')),  # Home app
     path('blog/', include('blog.urls')),  # Blog app
+    # path('tinymce/', include('tinymce.urls'))
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
