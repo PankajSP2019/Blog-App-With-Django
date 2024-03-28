@@ -28,7 +28,7 @@
                         <strong class="d-inline-block mb-2 text-primary-emphasis ">{{post.category}}</strong>
                         <h4 class="mb-0">{{post.title}}</h4>
                         <div class="mb-1 text-body-secondary">{{post.timestamp}}</div>
-                        <p class="card-text mb-auto" style="text-align: justify;"><span class="preview">{{ post.content|truncatechars:200 }}</span></p>
+                        <p class="card-text mb-auto" style="text-align: justify;"><span id="preview" class="preview">{{ post.content|truncatechars:200 }}</span></p>
                         <a href="/blog/{{post.slug}}">Continue reading</a>   
                     </div>
                     <div class="col-auto d-none d-lg-block">
@@ -56,4 +56,6 @@
     });
 
 </script>
+
+
 {% endblock %}

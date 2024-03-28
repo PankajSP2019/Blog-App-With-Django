@@ -6,7 +6,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 
 # Models
-from .models import Contact_H
+from .models import Contact_H, UserProfile
 from blog.models import Post
 
 # For Sending Email, and Verified Email
@@ -93,6 +93,8 @@ def register(request):
         email = request.POST['email']
         pass1 = request.POST['password1']
         pass2 = request.POST['password2']
+        # Few Changes to For upload Files, without Django File System
+        profile_picture = request.FILES.get("profile_picture")
 
         # print(fname, lname, user_name, email, pass1, pass2)
 
@@ -123,6 +125,10 @@ def register(request):
         # After email verification it will be Active
         user.is_active = False
         user.save()
+
+        # User Profile
+        user_profile = UserProfile(user=user, profile_picture=profile_picture)
+        user_profile.save()
 
         # Send Welcome Email & Email Verification
         current_site = get_current_site(request)
@@ -175,6 +181,13 @@ def activate_user(request, uidb64, token):
 
 def logged_in(request):
     if request.method == 'POST':
+
+        if request.user.is_authenticated:
+            messages.error(request, "You Are Already Logged in With an Account..")
+            # return redirect('Home')
+            # It Redirect to the Same page From Where This Request Call
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
         username = request.POST['userName']
         password = request.POST['userPassword']
 
@@ -204,7 +217,6 @@ def logout_blog(request):
     #  return redirect('Home')
     # It Redirect to the Same page From Where This Request Call
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
-
 
 
 def check_tiny(request):
