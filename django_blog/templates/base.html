@@ -62,13 +62,13 @@
                     <!-- Check If the User is the Super User Is Not -->
                     {% if user.is_superuser %}
                     <li class="nav-item">
-                        <a class="nav-link {% block superactive  %}{% endblock %}" href="#">Super User</a>
+                        <a class="nav-link {% block superactive  %}{% endblock %}" href="/author_request_handle">Author Request</a>
                     </li>
                     {% endif %}
                     <!-- Check If the User is the Is Staff Is Not -->
                     {% if user.is_staff %}
                     <li class="nav-item">
-                        <a class="nav-link {% block staffactive  %}{% endblock %}" href="#">Staff User</a>
+                        <a class="nav-link {% block staffactive  %}{% endblock %}" href="#">Author Panel</a>
                     </li>
                     {% endif %}
                     {% endif %}
@@ -231,7 +231,7 @@
                     <h1 class="modal-title fs-5" id="staticBackdropLabel">Become An Author</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form action="#" method="post" >
+                <form action="/authorRequest/" method="post" >
                     {% csrf_token %}
                     <div class="modal-body">   
                         <div class="row">
@@ -274,6 +274,8 @@
             </a>
         </div>
     </footer>
+
+    
 
 
 

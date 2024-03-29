@@ -29,3 +29,19 @@ class UserProfile(models.Model):
         return f"Profile ID-{self.up_no} UserName-{self.user.username}"
 
 
+class AuthorRequest(models.Model):
+    CATEGORY_CHOICES = [
+        ('Pending', 'Pending'),
+        ('Accepted', 'Accepted'),
+        ('Rejected', 'Rejected'),
+
+    ]
+
+    ar_no = models.AutoField(primary_key=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    about_author = models.TextField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(max_length=50, choices=CATEGORY_CHOICES)
+
+    def __str__(self):
+        return f"Request-No:{self.ar_no} User:{self.user} Status:{self.status}"

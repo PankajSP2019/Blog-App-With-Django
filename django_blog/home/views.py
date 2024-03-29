@@ -5,8 +5,11 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 
+# For Give Permission To User
+from django.contrib.auth.models import Permission
+
 # Models
-from .models import Contact_H, UserProfile
+from .models import Contact_H, UserProfile, AuthorRequest
 from blog.models import Post
 
 # For Sending Email, and Verified Email
@@ -217,6 +220,31 @@ def logout_blog(request):
     #  return redirect('Home')
     # It Redirect to the Same page From Where This Request Call
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+
+@login_required(login_url="/")
+def authorRequest(request):
+    if request.method == 'POST':
+        about_author = request.POST['about_author']
+        if len(about_author) > 20:
+            author_request = AuthorRequest(user=request.user, about_author=about_author, status='Pending')
+            author_request.save()
+
+            messages.success(request, "Your Request Is Submitted To Our Admin. Wait For Confirmation.")
+            # It Redirects to the Same page From Where This Request Call
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+        else:
+            messages.warning(request, "Your Description Is Too Short.")
+            # It Redirects to the Same page From Where This Request Call
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+    else:
+        return HttpResponse("Something Went Wrong")
+
+
+def author_request_handle(request):
+    all_author_request = AuthorRequest.objects.all()
+    return render(request, "home/author_request_handle.html", {'all_author_request':all_author_request})
 
 
 def check_tiny(request):
