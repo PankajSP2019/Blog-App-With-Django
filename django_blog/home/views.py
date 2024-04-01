@@ -244,7 +244,50 @@ def authorRequest(request):
 
 def author_request_handle(request):
     all_author_request = AuthorRequest.objects.all()
-    return render(request, "home/author_request_handle.html", {'all_author_request':all_author_request})
+    return render(request, "home/author_request_handle.html", {'all_author_request': all_author_request})
+
+
+def author_request_reject_handle(request):
+    # We can use here request.user.is_authenticated
+    if request.method == "POST":
+        reject_reason = request.POST['reject_reason']
+        print(reject_reason)
+
+        # Author Reject Operation
+
+        messages.warning(request, "Successfully Reject Author Request.")
+        return redirect('AuthorRequestHandle')
+    else:
+        return HttpResponse("Something Went Wrong Please Contact Our Admin.")
+
+
+def author_request_accept_handle(request):
+    # We can use here request.user.is_authenticated
+    if request.method == "POST":
+        add_p = request.POST.get('add_perms', 'off')
+        view_p = request.POST.get('view_perms', 'off')
+        delete_p = request.POST.get('delete_perms', 'off')
+        change_p = request.POST.get('change_perms', 'off')
+        if add_p == 'off' and view_p == 'off' and delete_p == 'off' and change_p == 'off':
+            messages.error(request, "You Have To Grant At least 1 Permission.")
+            return redirect('AuthorRequestHandle')
+        else:
+            # Give Permission Will here
+            if add_p == 'on':
+                print("Add Permission Give Here")
+            if view_p == 'on':
+                print("View Permission Give Here")
+            if delete_p == 'on':
+                print("Delete Permission Give Here")
+            if change_p == 'on':
+                print("Change Permission Give Here")
+
+        # Author Accept Operation
+
+        messages.success(request, "Successfully Accept Author Request.")
+        return redirect('AuthorRequestHandle')
+    else:
+        return HttpResponse("Something Went Wrong Please Contact Our Admin.")
 
 
 def check_tiny(request):

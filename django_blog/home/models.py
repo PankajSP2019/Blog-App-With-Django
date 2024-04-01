@@ -24,9 +24,10 @@ class UserProfile(models.Model):
     # dob = models.DateField()
     # address = models.TextField(max_length=500)
     profile_picture = models.ImageField(upload_to="home/user_image")
+    is_author = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"Profile ID-{self.up_no} UserName-{self.user.username}"
+        return f"Profile ID-{self.up_no} UserName-{self.user.username} Is_Author-{self.is_author}"
 
 
 class AuthorRequest(models.Model):

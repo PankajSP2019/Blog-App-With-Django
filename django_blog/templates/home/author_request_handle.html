@@ -6,6 +6,18 @@
 {% load humanize %}
 
 {% block body %}
+
+    <!-- Alert Button For Showing the Messages-->
+    {% if messages %} <!-- main condition-->
+        {% for message in messages %}
+            <div {% if message.tags %} class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert" {% endif %}>
+                <strong>Hello!</strong> {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endif %} <!-- END main condition-->
+
+
     <div class="container my-4">
         <div class="row">
             <div class="col-md-8">
@@ -31,7 +43,8 @@
                                     <td><button class="btn btn-primary btn-sm" data-bs-toggle="modal"
                                         data-bs-target="#staticBackdrop-about-author-{{author_request.ar_no}}">Show</button></td>
                                     <td>{{author_request.timestamp|naturaltime}}</td>
-                                    <td><button class="btn btn-primary btn-sm">Aceept</button> <button class="btn btn-danger btn-sm" data-bs-toggle="modal"
+                                    <td><button class="btn btn-primary btn-sm"              
+                                        data-bs-toggle="modal" data-bs-target="#staticBackdrop-accept-{{author_request.ar_no}}">Aceept</button> <button class="btn btn-danger btn-sm" data-bs-toggle="modal"
                                         data-bs-target="#staticBackdrop-reject-{{author_request.ar_no}}">Reject</button></td>
                                 </tr> 
                                 <!-- About Author Modal -->
@@ -50,7 +63,7 @@
                                     </div>
                                 </div>
                                 <!-- End About Author Modal -->
-                                <!-- About Reject Modal -->
+                                <!--  Reject Modal -->
                                 <div class="modal fade " id="staticBackdrop-reject-{{author_request.ar_no}}" data-bs-backdrop="static"
                                     data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdrop-reject-{{author_request.ar_no}}" aria-hidden="true">
                                     <div class="modal-dialog">
@@ -59,12 +72,13 @@
                                                 <h1 class="modal-title fs-5" id="staticBackdrop-reject-{{author_request.ar_no}}">Reject Author Request</h1>
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                             </div>
-                                            <form action="#" method="post" id="">
+                                            <form action="/author_request_reject/"   
+                                            
+                                                method="post" id="author_request_reject">
                                                 {% csrf_token %}
                                                 <div class="modal-body">
-                                                    <div class="form-outline mb-2">
-                                                        <label for="user_name" class="form-label">User Name</label>
-                                                        <input type="text" class="form-control" value="{{author_request.user.username}}" readonly>
+                                                    <div class="d-flex shadow p-1  mb-2 bg-body-tertiary rounded justify-content-center">
+                                                        <h5><span class="badge text-bg-primary">User Name:  </span>    {{author_request.user.username}}</h5> 
                                                     </div>
                                                     
                                                     <div class="mb-3">
@@ -73,13 +87,62 @@
                                                     </div>
                                                 </div>
                                                 <div class="modal-footer">
-                                                   
-                                                    <button type="submit" class="btn btn-danger">Reject</button>
+                                                
+                                                    <button name="reject-button" type="submit" class="btn btn-danger">Reject</button>
                                                 </div>
+                                            </form>
                                         </div>
                                     </div>
                                 </div>
                                 <!-- End Reject Modal -->
+                                <!-- Accept Modal -->
+                                <div class="modal fade" id="staticBackdrop-accept-{{author_request.ar_no}}" data-bs-backdrop="static"
+                                    data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdrop-accept-{{author_request.ar_no}}"
+                                    aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h1 class="modal-title fs-5" id="staticBackdrop-accept-{{author_request.ar_no}}">Reject Author Request</h1>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                            <form action="/author_request_accept/" method="post" id="">
+                                                {% csrf_token %}
+                                                <div class="modal-body">
+                                                    <div class="d-flex shadow p-1  mb-2 bg-body-tertiary rounded justify-content-center">
+                                                        <h5><span class="badge text-bg-primary">User Name: </span> {{author_request.user.username}}</h5>
+                                                    </div>
+                                                    <!-- Switch For Give Permission -->
+                                                    <div class="my-4 mb-2">
+                                                        <div class="form-check form-switch">
+                                                            <input class="form-check-input" type="checkbox" name="add_perms" role="switch" id="add_perms" checked>
+                                                            <label class="form-check-label" for="add_perms">Add Blog Permission</label>
+                                                        </div>
+                                                        <div class="form-check form-switch">
+                                                            <input class="form-check-input" type="checkbox" name="view_perms" role="switch" id="view_perms">
+                                                            <label class="form-check-label" for="view_perms"><span class="badge text-bg-warning text-wrap">View Blog Permission</span> </label>
+                                                        </div>
+                                                        <div class="form-check form-switch">
+                                                            <input class="form-check-input" type="checkbox" name="delete_perms" role="switch" id="delete_perms">
+                                                            <label class="form-check-label" for="delete_perms"><span class="badge text-bg-warning text-wrap">Delete Blog Permission</span></label>
+                                                        </div>
+                                                        
+                                                        <div class="form-check form-switch">
+                                                            <input class="form-check-input" type="checkbox" name="change_perms" role="switch" id="change_perms">
+                                                            <label class="form-check-label" for="change_perms"><span class="badge text-bg-warning text-wrap">Edit Blog Permission</span></label>
+                                                        </div>
+                                                    </div>                           
+                                                    
+                                                </div>
+                                                <div class="modal-footer">
+                                
+                                                    <button type="submit" name="accept_button" class="btn btn-primary">Accept</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- End Accept Modal -->
                             {% endif %}
                         {% endfor %}
                         
