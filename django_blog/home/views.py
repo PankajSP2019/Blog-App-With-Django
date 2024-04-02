@@ -8,6 +8,9 @@ from django.contrib.auth.decorators import login_required
 # For Give Permission To User
 from django.contrib.auth.models import Permission
 
+# For Use Multiple Condition In QuerySet - > Filter
+from django.db.models import Q
+
 # Models
 from .models import Contact_H, UserProfile, AuthorRequest
 from blog.models import Post
@@ -225,28 +228,49 @@ def logout_blog(request):
 @login_required(login_url="/")
 def authorRequest(request):
     if request.method == 'POST':
-        about_author = request.POST['about_author']
-        if len(about_author) > 20:
-            author_request = AuthorRequest(user=request.user, about_author=about_author, status='Pending')
-            author_request.save()
+        # if not AuthorRequest.objects.filter(user=request.user).exists():
+        # Using Multiple condition in filter object
+        if not AuthorRequest.objects.filter(
+                Q(user=request.user) & (Q(status='Pending') | Q(status='Accepted'))).exists():
+            about_author = request.POST['about_author']
+            if len(about_author) > 20:
+                author_request = AuthorRequest(user=request.user, about_author=about_author, status='Pending')
+                author_request.save()
 
-            messages.success(request, "Your Request Is Submitted To Our Admin. Wait For Confirmation.")
-            # It Redirects to the Same page From Where This Request Call
-            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+                messages.success(request, "Your Request Is Submitted To Our Admin. Wait For Confirmation.")
+                # It Redirects to the Same page From Where This Request Call
+                return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
+            else:
+                messages.warning(request, "Your Description Is Too Short.")
+                # It Redirects to the Same page From Where This Request Call
+                return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
         else:
-            messages.warning(request, "Your Description Is Too Short.")
-            # It Redirects to the Same page From Where This Request Call
-            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+            check = AuthorRequest.objects.filter(user=request.user).first()
+            if check.status == "Pending":
+                messages.error(request, "You Are Already Request For Author And Status Is :  Pending")
+                # It Redirects to the Same page From Where This Request Call
+                return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+            else:
+                messages.error(request, "You Are Already An Author, Why You are Request Again, If You Face Any Problem Please Contact With Our Admin.. ")
+                # It Redirects to the Same page From Where This Request Call
+                return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
     else:
         return HttpResponse("Something Went Wrong")
 
 
+@login_required(login_url="/")
 def author_request_handle(request):
-    all_author_request = AuthorRequest.objects.all()
-    return render(request, "home/author_request_handle.html", {'all_author_request': all_author_request})
+    if request.user.is_superuser:
+        all_author_request = AuthorRequest.objects.all()
+        return render(request, "home/author_request_handle.html", {'all_author_request': all_author_request})
+    else:
+        messages.error(request, "You Are Not Allowed To Visit This Page.")
+        # It Redirects to the Same page From Where This Request Call
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
+@login_required(login_url="/")
 def author_request_reject_handle(request):
     # We can use here request.user.is_authenticated
     if request.method == "POST":
@@ -261,6 +285,7 @@ def author_request_reject_handle(request):
         return HttpResponse("Something Went Wrong Please Contact Our Admin.")
 
 
+@login_required(login_url="/")
 def author_request_accept_handle(request):
     # We can use here request.user.is_authenticated
     if request.method == "POST":
