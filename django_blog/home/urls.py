@@ -16,6 +16,7 @@ urlpatterns = [
     path('author_request_handle/', views.author_request_handle, name="AuthorRequestHandle"),
     path('author_request_reject/', views.author_request_reject_handle, name="AuthorRequestRejectHandle"),
     path('author_request_accept/', views.author_request_accept_handle, name="AuthorRequestAcceptHandle"),
+    path('postblog/', views.PostBlog, name="PostBlog"),
 
 
 ]

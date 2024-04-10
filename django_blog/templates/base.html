@@ -17,20 +17,16 @@
     </script>
 
 
-
-
-    {% block css %} {% endblock %}
     <style>
         .footer {
             background: linear-gradient(to right, #007bff, #6c757d);
             color: white;
             position: relative;
-            margin-bottom:0px;
-            
-            
-            
+            margin-bottom:0px; 
         }
     </style>
+
+    {% block css %} {% endblock %}
 </head>
 
 <body>
@@ -69,7 +65,7 @@
                     <!-- Check If the User is the Is Author Is Not, Cheeck by Session -->
                     {% if request.session.is_author %}
                     <li class="nav-item">
-                        <a class="nav-link {% block postblogactive  %}{% endblock %}" href="#">Post Blog</a>
+                        <a class="nav-link {% block postblogactive  %}{% endblock %}" href="/postblog/">Post Blog</a>
                     </li>
                     {% endif %}
                     {% endif %}
@@ -268,17 +264,21 @@
 
     {% block body %} {% endblock %}
 
-    <!-- Footer -->
-    <footer class="footer text-white  text-center py-4 mt-5 ">
-        <div class="container ">
-            <p>&copy; 2024 Blog Sphere. All rights reserved. | Developed by Pankaj Kumar Das</p>
-            <!-- GitHub Link with Image -->
-            <a href="https://github.com/YourGitHubUsername" target="_blank">
-                <img src="https://img.icons8.com/color/96/000000/github--v1.png" alt="GitHub"
-                    style="width: 32px; height: 32px; margin-right: 5px;">
-            </a>
-        </div>
-    </footer>
+    {% block footer %} 
+        <!-- Footer -->
+        <footer class="footer text-white  text-center py-4 mt-5 ">
+            <div class="container ">
+                <p>&copy; 2024 Blog Sphere. All rights reserved. | Developed by Pankaj Kumar Das</p>
+                <!-- GitHub Link with Image -->
+                <a href="https://github.com/YourGitHubUsername" target="_blank">
+                    <img src="https://img.icons8.com/color/96/000000/github--v1.png" alt="GitHub"
+                        style="width: 32px; height: 32px; margin-right: 5px;">
+                </a>
+            </div>
+        </footer>
+    {% endblock %}
+
+    
 
 
     

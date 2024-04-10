@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils.timezone import now
 
-from tinymce.models import HTMLField
+# from tinymce.models import HTMLField
 
 # For Custom Template Tags
 from .templatetags import extras

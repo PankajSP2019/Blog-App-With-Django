@@ -363,5 +363,8 @@ def author_request_accept_handle(request):
         return HttpResponse("Something Went Wrong Please Contact Our Admin.")
 
 
+def PostBlog(request):
+    return render(request, "home/add_blog.html")
+
 def check_tiny(request):
     return render(request, "tinyMCE_example.html")
