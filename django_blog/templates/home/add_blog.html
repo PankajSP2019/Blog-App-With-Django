@@ -6,20 +6,67 @@
 {% load static %}
 {% block css %}
 <style>
+    /* body {
+             background: linear-gradient(to right, #4facfe, #00f2fe);
+            
+        } */
     body {
-             background: linear-gradient(to right, #4facfe, #00f2fe);/* Set your desired background color here */
-            /* You can also use color names, RGB values, or other valid color representations */
+        background-image: url("{% static 'home/b1.jpg' %}");
         }
+
     
 </style>
 {% endblock %}
 
 {% block body %}
-<div class="container my-3  bg-light rounded" id="container">
-hello
+<div class="container my-3  bg-light shadow-lg p-3 mb-5 bg-body-tertiary rounded" id="container">
+<h4 class="bg-success p-2 ms-0 text-dark bg-opacity-10">Post Blog</h4>
+<div class="bg-success p-2 mx-0 ms-0  bg-opacity-10">Post Blog</div>
 <form>
     <input type="text">
 </form>
+
+<form id="contentForm" method="post" action="#"> {% csrf_token %}
+    <div class=" my-2">
+        <div class="card">
+            <h3 class="card-header bg-success bg-opacity-10">Write Blog</h3>
+            <div class="card-body">
+                <div class="container">
+
+                    <div class="mb-3">
+                        <label for="title" class="form-label">Blog Title</label>
+                        <input type="text" name="title" class="form-control" id="title"
+                            placeholder="Enter Blog Title" autocomplete="off" required>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" name="email" class="form-control"
+                                placeholder="Enter Your Valid Email Address" id="email" autocomplete="off" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="phone" class="form-label">Phone</label>
+                            <input type="phone" name="phone" class="form-control" id="phone" autocomplete="off"
+                                required>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="exampleFormControlTextarea1" class="form-label">How May We Help You</label>
+                        <textarea name="content" class="form-control" id="exampleFormControlTextarea1" rows="3"
+                            required></textarea>
+                        <!-- <input type="text" name="t_description" class="form-control"  placeholder="Enter Your Work Title" required> -->
+                    </div>
+                    <button class="btn btn-primary" type="submit"><i class="bi bi-plus-lg"></i> Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form> <!--END Data Entry Form-->
+
+
+
+
 </div>
 {% endblock %}
 
