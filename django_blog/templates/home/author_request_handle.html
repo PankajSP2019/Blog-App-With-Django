@@ -80,6 +80,9 @@
                                                     <div class="d-flex shadow p-1  mb-2 bg-body-tertiary rounded justify-content-center">
                                                         <h5><span class="badge text-bg-primary">User Name:  </span>    {{author_request.user.username}}</h5> 
                                                     </div>
+
+                                                    <input type="hidden" name="ar_no" value="{{author_request.ar_no}}" >
+                                                    <input type="hidden" name="ar_user" value="{{author_request.user.pk}}">
                                                     
                                                     <div class="mb-3">
                                                         <label for="reject_reason" class="form-label">Reject Reasons</label>
@@ -118,6 +121,11 @@
                                                             <input class="form-check-input" type="checkbox" name="add_perms" role="switch" id="add_perms" checked>
                                                             <label class="form-check-label" for="add_perms">Add Blog Permission</label>
                                                         </div>
+                                                        <!-- Hiddin Inputs For pass The Important Details -->
+                                                        <input type="hidden" name="ar_no" value="{{author_request.ar_no}}">
+                                                        <input type="hidden" name="ar_user" value="{{author_request.user}}">
+                                                        <input type="hidden" name="ar_user_pk" value="{{author_request.user.pk}}">
+
                                                         <div class="form-check form-switch">
                                                             <input class="form-check-input" type="checkbox" name="view_perms" role="switch" id="view_perms">
                                                             <label class="form-check-label" for="view_perms"><span class="badge text-bg-warning text-wrap">View Blog Permission</span> </label>

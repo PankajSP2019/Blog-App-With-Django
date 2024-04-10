@@ -23,10 +23,10 @@
     <style>
         .footer {
             background: linear-gradient(to right, #007bff, #6c757d);
-            
             color: white;
             position: relative;
-            margin-bottom:0px
+            margin-bottom:0px;
+            
             
             
         }
@@ -35,7 +35,7 @@
 
 <body>
     <!-- Nav Bar Start -->
-    <nav class="navbar navbar-expand-lg bg-primary bg-body-tertiary " data-bs-theme="dark">
+    <nav class="navbar navbar-expand-lg bg-primary bg-body-tertiary sticky-top" data-bs-theme="dark">
         <div class="container-fluid">
             <a class="navbar-brand" href="/">BlogSphere</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
@@ -66,10 +66,10 @@
                         <a class="nav-link {% block superactive  %}{% endblock %}" href="/author_request_handle">Author Request</a>
                     </li>
                     {% endif %}
-                    <!-- Check If the User is the Is Staff Is Not -->
-                    {% if user.is_staff %}
+                    <!-- Check If the User is the Is Author Is Not, Cheeck by Session -->
+                    {% if request.session.is_author %}
                     <li class="nav-item">
-                        <a class="nav-link {% block staffactive  %}{% endblock %}" href="#">Author Panel</a>
+                        <a class="nav-link {% block postblogactive  %}{% endblock %}" href="#">Post Blog</a>
                     </li>
                     {% endif %}
                     {% endif %}
@@ -91,12 +91,18 @@
                                 Welcome - {{user.first_name}} {{user.last_name}}
                             </button>
                             <ul class="dropdown-menu dropdown-menu-dark">
-                                <li><a class="dropdown-item" href="/logout">Logout</a></li>
-                                <!-- Become Author -->
-                                {% if not user.is_staff %}
-                                <li><a class="dropdown-item" data-bs-toggle="modal"
-                                        data-bs-target="#staticBackdrop-become-author">Become An Author?</a></li>
+                                <!-- Author Panel -->
+                                {% if request.session.is_author %}
+                                <li><a class="dropdown-item" href="#">Author Panel</a>
+                                </li>
                                 {% endif %}
+                                <!-- Become Author -->
+                                {% if not request.session.is_author %}
+                                <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#staticBackdrop-become-author">Become An Author?</a>
+                                </li>
+                                {% endif %}
+                                <li><a class="dropdown-item" href="/logout">Logout</a></li>
+                               
                             </ul>
                         </li>
                     </ul>
@@ -260,12 +266,10 @@
     </div>
     <!--Become a Author Modal-->
 
-
-
     {% block body %} {% endblock %}
 
     <!-- Footer -->
-    <footer class="footer text-white text-center py-4 mt-5 ">
+    <footer class="footer text-white  text-center py-4 mt-5 ">
         <div class="container ">
             <p>&copy; 2024 Blog Sphere. All rights reserved. | Developed by Pankaj Kumar Das</p>
             <!-- GitHub Link with Image -->

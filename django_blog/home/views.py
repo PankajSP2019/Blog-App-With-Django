@@ -203,6 +203,13 @@ def logged_in(request):
             # Login
             login(request, user)
             messages.success(request, "Successfully Logged In...")
+
+            # Set custom Sessions To Check The User Author OR Not
+            user_profiles = UserProfile.objects.filter(user=user.pk)
+            if user_profiles.exists():
+                user_profile = user_profiles[0]
+                request.session['is_author'] = user_profile.is_author
+
             #  return redirect('Home')
             # It Redirect to the Same page From Where This Request Call
             return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
@@ -219,6 +226,11 @@ def logged_in(request):
 @login_required(login_url="/")
 def logout_blog(request):
     logout(request)
+
+    # Remove the Custom Session
+    request.session.clear()
+    request.session.flush()
+
     messages.success(request, "Successfully Logged Out, Thank You.")
     #  return redirect('Home')
     # It Redirect to the Same page From Where This Request Call
@@ -248,11 +260,12 @@ def authorRequest(request):
         else:
             check = AuthorRequest.objects.filter(user=request.user).first()
             if check.status == "Pending":
-                messages.error(request, "You Are Already Request For Author And Status Is :  Pending")
+                messages.error(request, "You Are Already Requested For Author And Status Is :  Pending")
                 # It Redirects to the Same page From Where This Request Call
                 return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
             else:
-                messages.error(request, "You Are Already An Author, Why You are Request Again, If You Face Any Problem Please Contact With Our Admin.. ")
+                messages.error(request,
+                               "You Are Already An Author, Why You are Request Again, If You Face Any Problem Please Contact With Our Admin.. ")
                 # It Redirects to the Same page From Where This Request Call
                 return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
     else:
@@ -275,11 +288,21 @@ def author_request_reject_handle(request):
     # We can use here request.user.is_authenticated
     if request.method == "POST":
         reject_reason = request.POST['reject_reason']
-        print(reject_reason)
+        ar_no = request.POST['ar_no']
+        ar_user_pk = request.POST['ar_user']
+
+        # print(reject_reason)
+        # print(ar_no)
+        # print(ar_user)
 
         # Author Reject Operation
+        au_re = AuthorRequest.objects.filter(ar_no=ar_no, user=ar_user_pk).exclude(status="Rejected")[0]
+        # au_re = AuthorRequest.objects.filter(ar_no=ar_no, user=ar_user_pk, status="Pending")
+        au_re.reject_reason = reject_reason
+        au_re.status = "Rejected"
+        au_re.save()
 
-        messages.warning(request, "Successfully Reject Author Request.")
+        messages.warning(request, f"Request No. {ar_no}. Successfully Reject Author Request.")
         return redirect('AuthorRequestHandle')
     else:
         return HttpResponse("Something Went Wrong Please Contact Our Admin.")
@@ -293,21 +316,46 @@ def author_request_accept_handle(request):
         view_p = request.POST.get('view_perms', 'off')
         delete_p = request.POST.get('delete_perms', 'off')
         change_p = request.POST.get('change_perms', 'off')
+        ar_no = request.POST['ar_no']
+        ar_user = request.POST['ar_user']
+        ar_user_pk = request.POST['ar_user_pk']
+
+
         if add_p == 'off' and view_p == 'off' and delete_p == 'off' and change_p == 'off':
             messages.error(request, "You Have To Grant At least 1 Permission.")
             return redirect('AuthorRequestHandle')
         else:
             # Give Permission Will here
+            user = User.objects.get(pk=ar_user_pk)
             if add_p == 'on':
                 print("Add Permission Give Here")
+                add_blog_permission = Permission.objects.get(name="Can add post")
+                user.user_permissions.add(add_blog_permission)
             if view_p == 'on':
                 print("View Permission Give Here")
+                view_blog_permission = Permission.objects.get(name="Can view post")
+                user.user_permissions.add(view_blog_permission)
             if delete_p == 'on':
                 print("Delete Permission Give Here")
+                delete_blog_permission = Permission.objects.get(name="Can delete post")
+                user.user_permissions.add(delete_blog_permission)
             if change_p == 'on':
                 print("Change Permission Give Here")
+                change_blog_permission = Permission.objects.get(name="Can change post")
+                user.user_permissions.add(change_blog_permission)
 
-        # Author Accept Operation
+            user.save()
+
+            # User Profile Update to Is_Author
+            make_author = UserProfile.objects.get(user=ar_user_pk)
+            make_author.is_author = True
+            make_author.save()
+
+            # Author Accept Operation
+            au_re = AuthorRequest.objects.filter(ar_no=ar_no, user=ar_user_pk, status="Pending")[0]
+            au_re.status = "Accepted"
+            au_re.save()
+
 
         messages.success(request, "Successfully Accept Author Request.")
         return redirect('AuthorRequestHandle')

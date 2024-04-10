@@ -43,6 +43,16 @@ class AuthorRequest(models.Model):
     about_author = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=50, choices=CATEGORY_CHOICES)
+    reject_reason = models.TextField(blank=True)
+
+    # If the Status is Rejected once It Cannot Be Changed
+    # def save(self, *args, **kwargs):
+    #     if self.pk:  # Check if the instance has already been saved (i.e., is not a new instance)
+    #         original_status = AuthorRequest.objects.get(pk=self.pk).status
+    #         if original_status == 'Rejected' and self.status != 'Rejected':
+    #             # If the status is already Rejected and trying to change it, raise an exception
+    #             raise ValueError("Cannot change status from 'Rejected'.")
+    #     super().save(*args, **kwargs)
 
     def __str__(self):
         return f"Request-No:{self.ar_no} User:{self.user} Status:{self.status}"
