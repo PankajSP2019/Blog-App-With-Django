@@ -20,15 +20,16 @@ class Post(models.Model):
         ('Digital Insights', 'Digital Insights'),
         ('Creative Crafts', 'Creative Crafts'),
         ('Travel Tales', 'Travel Tales'),
-        ('Inspirational Stories', 'Inspirational Stories')
+        ('Inspirational Stories ', 'Inspirational Stories')
     ]
 
     pno = models.AutoField(primary_key=True)
     title = models.CharField(max_length=150)
     author = models.CharField(max_length=100)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     category = models.CharField(max_length=100, blank=True, choices=CATEGORY_CHOICES)
     slug = models.CharField(max_length=700, blank=True, null=True)
-    timestamp = models.DateField(blank=True)
+    timestamp = models.DateField(auto_now_add=True)
     content = models.TextField()
     summary = models.TextField()
     image = models.ImageField(upload_to="blog/images", default="")

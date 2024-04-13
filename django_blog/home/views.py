@@ -363,7 +363,44 @@ def author_request_accept_handle(request):
         return HttpResponse("Something Went Wrong Please Contact Our Admin.")
 
 
+
 def PostBlog(request):
+    if request.method == "POST":
+        title = request.POST.get('title')
+        category = request.POST.get('category')
+        image = request.FILES.get("main-image")
+        blog_content = request.POST['blog-content']
+        blog_summary = request.POST['blog-summary']
+
+        # Validation
+
+        # For Title
+        if len(title) < 20:
+            messages.error(request, "Blog Title Is Too Short Less Than 20 Character.")
+            return redirect('PostBlog')
+
+        # For Image
+        # We Just Allowed to Upload Image file, Using Html
+        # If Anyone, Tries To Upload Non Image file, For This Validate In Here, Detect The File Image Or Not
+        import imghdr
+        image_type = imghdr.what(image)
+        if not image_type:
+            messages.error(request, "You Are Allowed To Upload Image File, As Main Image.")
+            return redirect('PostBlog')
+
+        # For Blog Content
+        if len(blog_content) < 1500:
+            messages.error(request, "Blog Content Is Too Short Less Than 1000 Character.")
+            return redirect('PostBlog')
+
+        # For Blog Summary
+        if len(blog_summary) < 300:
+            messages.error(request, "Blog Content Is Too Short Less Than 300 Character.")
+            return redirect('PostBlog')
+
+        print(title, category, image, blog_content, blog_summary)
+        messages.success(request, "Post Blog Successfully.")
+
     return render(request, "home/add_blog.html")
 
 def check_tiny(request):
