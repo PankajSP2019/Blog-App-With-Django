@@ -67,7 +67,7 @@
                     <!-- Check If the User is the Is Author Is Not, Cheeck by Session -->
                     {% if request.session.is_author %}
                     <li class="nav-item">
-                        <a class="nav-link {% block postblogactive  %}{% endblock %}" href="/postblog/">Post Blog</a>
+                        <a class="nav-link {% block postblogactive  %}{% endblock %}" href="/blog/postblog/">Post Blog</a>
                     </li>
                     {% endif %}
                     {% endif %}
@@ -91,7 +91,7 @@
                             <ul class="dropdown-menu dropdown-menu-dark">
                                 <!-- Author Panel -->
                                 {% if request.session.is_author %}
-                                <li><a class="dropdown-item" href="#">Author Panel</a>
+                                <li><a class="dropdown-item" href="/author_panel/">Author Panel</a>
                                 </li>
                                 {% endif %}
                                 <!-- Become Author -->
@@ -99,6 +99,8 @@
                                 <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#staticBackdrop-become-author">Become An Author?</a>
                                 </li>
                                 {% endif %}
+                                <li><a class="dropdown-item" data-bs-toggle="modal"
+                                    data-bs-target="#staticBackdrop-change-password" href="#">Change Password?</a></li>
                                 <li><a class="dropdown-item" href="/logout">Logout</a></li>
                                
                             </ul>
@@ -262,7 +264,41 @@
             </div>
         </div>
     </div>
-    <!--Become a Author Modal-->
+    <!--Become a Author Modal END-->
+
+    <!--Password Change Modal Modal -->
+    <div class="modal fade" id="staticBackdrop-change-password" data-bs-backdrop="static" data-bs-keyboard="false"
+        tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Change Password</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="" method="post">
+                    {% csrf_token %}
+                    <div class="modal-body">
+                        <div class="row">    
+                            <div class="form-outline mb-2">
+                                <label for="user_name" class="form-label">User Name</label>
+                                <input type="text" class="form-control" value="{{user.username}}" readonly>
+                            </div>    
+                            <div class="mb-3">
+                                <label for="about_author" class="form-label">Tell Me About YourSelf In Brife.</label>
+                                <textarea name="about_author" class="form-control" id="about_author" rows="3"
+                                    required></textarea>
+                            </div>
+   
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Change</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!--Password Change Modal END-->
 
     {% block body %} {% endblock %}
 

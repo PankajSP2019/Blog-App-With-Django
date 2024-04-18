@@ -3,6 +3,9 @@ from django.http import HttpResponse
 from .models import Post, BlogComment
 from django.contrib import messages
 
+# Check Permission
+from django.contrib.auth.decorators import permission_required, login_required
+
 
 # Create your views here.
 
@@ -59,3 +62,57 @@ def postComment(request):
 
     else:
         return HttpResponse("404 - Some Error Occurs")
+
+
+# Post A Blog By Author
+@permission_required("blog.add_post", login_url="/")  # Check The add permission
+def PostBlog(request):
+    if request.method == "POST":
+        title = request.POST.get('title')
+        category = request.POST.get('category')
+        image = request.FILES.get("main-image")
+        blog_content = request.POST['blog-content']
+        blog_summary = request.POST['blog-summary']
+        fname = request.user.first_name
+        lname = request.user.last_name
+        author_name = f"{fname} {lname}"
+        user = request.user
+
+        # Validation
+
+        # For Title
+        if len(title) < 20:
+            messages.error(request, "Blog Title Is Too Short Less Than 20 Character.")
+            return redirect('PostBlog')
+
+        # For Image
+        # We Just Allowed to Upload Image file, Using Html
+        # If Anyone, Tries To Upload Non Image file, For This Validate In Here, Detect The File Image Or Not
+        import imghdr
+        image_type = imghdr.what(image)
+        if not image_type:
+            messages.error(request, "You Are Allowed To Upload Image File, As Main Image.")
+            return redirect('PostBlog')
+
+        # For Blog Content
+        if len(blog_content) < 1500:
+            messages.error(request, "Blog Content Is Too Short Less Than 1000 Character.")
+            return redirect('PostBlog')
+
+        # For Blog Summary
+        if len(blog_summary) < 300:
+            messages.error(request, "Blog Content Is Too Short Less Than 300 Character.")
+            return redirect('PostBlog')
+
+        # Insert The Blog
+        post_blog = Post(title=title, author=author_name, user=user, category=category,
+                         content=blog_content, summary=blog_summary, image=image)
+        post_blog.save()
+
+        # print(title, category, image, blog_content, blog_summary)
+        # print(author_name, user)
+
+        messages.success(request, "Post Blog Successfully.")
+        return redirect('PostBlog')
+
+    return render(request, "home/add_blog.html")

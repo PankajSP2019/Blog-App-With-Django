@@ -24,6 +24,11 @@
 {% endblock %}
 
 {% block body %}
+
+<!-- {% if perms.blog.add_post %}
+    <h1>Yeah</h1>
+{% endif %} -->
+
 <div class="container my-3  shadow-lg p-3 mb-5 bg-body-tertiary rounded" id="container">
 
     <!-- Alert Button For Showing the Messages-->
@@ -50,7 +55,7 @@
 
 
 
-<form method="post" action="/postblog/" enctype="multipart/form-data"> {% csrf_token %}
+<form method="post" action="/blog/postblog/" enctype="multipart/form-data"> {% csrf_token %}
     <div class=" my-2">
         <div class="card">
             <h4 class="card-header bg-success bg-opacity-10">Write Blog</h4>

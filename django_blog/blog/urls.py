@@ -4,6 +4,7 @@ from . import views
 
 urlpatterns = [
 
+    path("postblog/", views.PostBlog, name="PostBlog"),
     path("commentpost/", views.postComment, name="CommentPost"),
     path("", views.blogHome, name="blogHome"),
     path("<str:slug>/", views.blogPost, name="blogPost"),

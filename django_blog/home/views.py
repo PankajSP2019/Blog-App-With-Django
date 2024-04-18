@@ -320,7 +320,6 @@ def author_request_accept_handle(request):
         ar_user = request.POST['ar_user']
         ar_user_pk = request.POST['ar_user_pk']
 
-
         if add_p == 'off' and view_p == 'off' and delete_p == 'off' and change_p == 'off':
             messages.error(request, "You Have To Grant At least 1 Permission.")
             return redirect('AuthorRequestHandle')
@@ -356,52 +355,31 @@ def author_request_accept_handle(request):
             au_re.status = "Accepted"
             au_re.save()
 
-
         messages.success(request, "Successfully Accept Author Request.")
         return redirect('AuthorRequestHandle')
     else:
         return HttpResponse("Something Went Wrong Please Contact Our Admin.")
 
 
+# Author Panel
+@login_required(login_url="/")
+def author_panel(request):
+    if (request.user.has_perm('blog.add_post') or request.user.has_perm('blog.change_post') or
+            request.user.has_perm('blog.delete_post') or request.user.has_perm('blog.view_post')):
+        authors_all_blog = Post.objects.filter(user=request.user)
+        if len(authors_all_blog) == 0:
+            messages.warning(request, "You Have No Post Exits. Please Post Your Blog.")
+            return render(request, "home/author_panel.html")
+        else:
+            print(len(authors_all_blog))
+            return render(request, "home/author_panel.html", {'authors_all_blog': authors_all_blog})
 
-def PostBlog(request):
-    if request.method == "POST":
-        title = request.POST.get('title')
-        category = request.POST.get('category')
-        image = request.FILES.get("main-image")
-        blog_content = request.POST['blog-content']
-        blog_summary = request.POST['blog-summary']
+    else:
+        messages.error(request, "You Have No Permission, You Are Not Allowed In Author Panel.")
+        return redirect('Home')
 
-        # Validation
 
-        # For Title
-        if len(title) < 20:
-            messages.error(request, "Blog Title Is Too Short Less Than 20 Character.")
-            return redirect('PostBlog')
 
-        # For Image
-        # We Just Allowed to Upload Image file, Using Html
-        # If Anyone, Tries To Upload Non Image file, For This Validate In Here, Detect The File Image Or Not
-        import imghdr
-        image_type = imghdr.what(image)
-        if not image_type:
-            messages.error(request, "You Are Allowed To Upload Image File, As Main Image.")
-            return redirect('PostBlog')
-
-        # For Blog Content
-        if len(blog_content) < 1500:
-            messages.error(request, "Blog Content Is Too Short Less Than 1000 Character.")
-            return redirect('PostBlog')
-
-        # For Blog Summary
-        if len(blog_summary) < 300:
-            messages.error(request, "Blog Content Is Too Short Less Than 300 Character.")
-            return redirect('PostBlog')
-
-        print(title, category, image, blog_content, blog_summary)
-        messages.success(request, "Post Blog Successfully.")
-
-    return render(request, "home/add_blog.html")
 
 def check_tiny(request):
     return render(request, "tinyMCE_example.html")
