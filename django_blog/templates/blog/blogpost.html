@@ -62,12 +62,28 @@
 {% load extras %}
 
 <div class="container my-2 mx-2">
+    <!-- Alert Button For Showing the Messages-->
+    {% if messages %} <!-- main condition-->
+        {% for message in messages %}
+            <div {% if message.tags %} class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert" {% endif %}>
+                <strong>Hello!</strong> {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endif %} <!-- END main condition-->
     <div class="row g-5">
         <div class="col-md-8">
 
             <article class="my-4 blog-post border-bottom ">
                 <h2 class="display-5 link-body-emphasis mb-1">{{post.title}}</h2>
-                <p class="blog-post-meta my-2">{{post.timestamp}} by <a href="#">{{post.author}}</a></p>
+                <p class="blog-post-meta my-2">{{post.timestamp}} by <a href="#">{{post.author}}</a> 
+                {% if post.user == request.user %}
+                <span class="badge text-bg-dark">Last Edit : {{post.last_edit|naturaltime}}</span>
+               
+                    <a href="/blog/edit_blog/{{post.pno}}"><button class="btn btn-primary btn-sm">Edit Blog</button></a>
+                {% endif %}
+                
+                </p>
             </article>
 
             <article class="my-4 blog-post border-bottom mx-2">

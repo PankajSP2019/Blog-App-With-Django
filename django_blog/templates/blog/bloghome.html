@@ -29,7 +29,7 @@
                         <h4 class="mb-0">{{post.title}}</h4>
                         <div class="mb-1 text-body-secondary">{{post.timestamp}}</div>
                         <p class="card-text mb-auto" style="text-align: justify;"><span id="preview" class="preview">{{ post.content|truncatechars:200 }}</span></p>
-                        <a href="/blog/{{post.slug}}">Continue reading</a>   
+                        <a class="icon-link gap-1 icon-link-hover stretched-link" href="/blog/{{post.slug}}">Continue reading</a>   
                     </div>
                     <div class="col-auto d-none d-lg-block">
                         <img src="/media/{{ post.image }}" alt="Thumbnail" width="200px" height="250px" style="object-fit: cover;">

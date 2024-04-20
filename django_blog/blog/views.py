@@ -116,3 +116,48 @@ def PostBlog(request):
         return redirect('PostBlog')
 
     return render(request, "home/add_blog.html")
+
+@login_required(login_url="/")
+def EditBlog(request, pid):
+    blog_post = Post.objects.filter(user=request.user, pno=pid)[0]
+    if request.method == "POST":
+        title = request.POST.get('title')
+        category = request.POST.get('category')
+        blog_content = request.POST['blog-content']
+        blog_summary = request.POST['blog-summary']
+
+        # print(title, category, blog_content, blog_summary)
+
+        # Validation
+
+        # For Title
+        if len(title) < 20:
+            messages.error(request, "Blog Title Is Too Short Less Than 20 Character.")
+            return redirect('EditBlog', pid=blog_post.pno)
+
+        # For Blog Content
+        if len(blog_content) < 1500:
+            messages.error(request, "Blog Content Is Too Short Less Than 1500 Character.")
+            return redirect('EditBlog', pid=blog_post.pno)
+
+        # For Blog Summary
+        if len(blog_summary) < 300:
+            messages.error(request, "Blog Summary Is Too Short Less Than 300 Character.")
+            return redirect('EditBlog', pid=blog_post.pno)
+
+        # Update
+        from django.utils import timezone
+        blog_post.title = title
+        blog_post.category = category
+        blog_post.content = blog_content
+        blog_post.summary = blog_summary
+        blog_post.last_edit = timezone.now()
+        blog_post.save()
+
+        messages.success(request, f"Blog ID: {blog_post.pno} Edit Successfully.")
+        return redirect('blogPost', slug=blog_post.slug)
+    # else:
+    #     messages.error(request, "You are not Allowed here.")
+    #     return redirect('Home')
+
+    return render(request, "blog/edit_blog.html", {'blog_post': blog_post})

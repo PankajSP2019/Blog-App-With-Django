@@ -33,6 +33,7 @@ class Post(models.Model):
     content = models.TextField()
     summary = models.TextField()
     image = models.ImageField(upload_to="blog/images", default="")
+    last_edit = models.DateTimeField(blank=True, null=True)
 
     # For Automatic save the slug from title
     def save(self, *args, **kwargs):
