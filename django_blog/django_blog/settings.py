@@ -32,6 +32,8 @@ MESSAGE_TAGS = {
 }
 STATIC_URL = '/static/'
 STATIC_ROOT = '/static/'
+
+
 # These Settings added by Pankaj Kumar Das , to access the static file
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),  # Main static directory

@@ -24,8 +24,15 @@ from django.template.loader import render_to_string
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.utils.encoding import force_bytes, force_str
 
+# For Password Change
+from django.contrib.auth.forms import PasswordChangeForm
+# After Change the Password The Session Is Reset Automatically, Update the Session
+from django.contrib.auth import update_session_auth_hash
+# Custom Form For Password Change
+from .forms import PasswordChangeForm
 
-# Create your views here.
+
+# Create your views here
 
 
 def home(request):
@@ -379,6 +386,23 @@ def author_panel(request):
         return redirect('Home')
 
 
+def password_change(request):
+    """
+    :param request:
+    :return: Show The Password Change Form and If User Request, Change The Password
+    """
+
+    if request.method == "POST":
+        fm = PasswordChangeForm(user=request.user, data=request.POST)
+        if fm.is_valid():
+            fm.save()
+            messages.success(request, "Your Password Change Successfully..")
+            return redirect("Home")
+    else:
+        # Password Change Form
+        fm = PasswordChangeForm(user=request.user)
+
+    return render(request, "home/password_change.html", {'fm':fm})
 
 
 def check_tiny(request):

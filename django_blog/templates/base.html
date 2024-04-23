@@ -99,9 +99,10 @@
                                 <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#staticBackdrop-become-author">Become An Author?</a>
                                 </li>
                                 {% endif %}
-                                <li><a class="dropdown-item" data-bs-toggle="modal"
-                                    data-bs-target="#staticBackdrop-change-password" href="#">Change Password?</a></li>
-                                <li><a class="dropdown-item" href="/logout">Logout</a></li>
+                                <li><a class="dropdown-item" href="/password_change/">Change Password?</a></li>
+                                <li><a data-bs-toggle="modal"
+                                    data-bs-target="#staticBackdrop-logout" class="dropdown-item" href="#">Logout</a>
+                                </li>
                                
                             </ul>
                         </li>
@@ -267,7 +268,7 @@
     <!--Become a Author Modal END-->
 
     <!--Password Change Modal Modal -->
-    <div class="modal fade" id="staticBackdrop-change-password" data-bs-backdrop="static" data-bs-keyboard="false"
+    <!-- <div class="modal fade" id="staticBackdrop-change-password" data-bs-backdrop="static" data-bs-keyboard="false"
         tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -277,6 +278,14 @@
                 </div>
                 <form action="" method="post">
                     {% csrf_token %}
+
+                    <div class="container my-2">
+                        {% if fm %}
+                            {{fm.as_p}}
+                        {% endif %}
+                    </div>
+
+                    
                     <div class="modal-body">
                         <div class="row">    
                             <div class="form-outline mb-2">
@@ -297,8 +306,30 @@
                 </form>
             </div>
         </div>
-    </div>
+    </div> -->
     <!--Password Change Modal END-->
+
+    <!--FOR Logout Modal -->
+    <div class="modal fade" id="staticBackdrop-logout" data-bs-backdrop="static" data-bs-keyboard="false"
+        tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-sm modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Logout</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are You Sure Want to Logout?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <!-- After click this button DELETE Operation will Trigger  -->
+                    <a href="/logout"><button class="btn btn-danger">YES</button></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END Logout Modal -->
 
     {% block body %} {% endblock %}
 
