@@ -386,6 +386,8 @@ def author_panel(request):
         return redirect('Home')
 
 
+@login_required(login_url="/")
+# For Change The User Password
 def password_change(request):
     """
     :param request:
@@ -396,13 +398,14 @@ def password_change(request):
         fm = PasswordChangeForm(user=request.user, data=request.POST)
         if fm.is_valid():
             fm.save()
+            update_session_auth_hash(request, fm.user)
             messages.success(request, "Your Password Change Successfully..")
             return redirect("Home")
     else:
         # Password Change Form
         fm = PasswordChangeForm(user=request.user)
 
-    return render(request, "home/password_change.html", {'fm':fm})
+    return render(request, "home/password_change.html", {'fm': fm})
 
 
 def check_tiny(request):
