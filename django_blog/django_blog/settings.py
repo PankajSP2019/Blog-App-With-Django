@@ -72,6 +72,8 @@ INSTALLED_APPS = [
     # 'tinymce'
     # 'blog.apps.BlogConfig'
     # 'home.apps.HomeConfig'
+    # For Re-Captcha
+    # 'captcha',
 ]
 
 MIDDLEWARE = [

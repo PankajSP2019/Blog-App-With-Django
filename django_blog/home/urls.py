@@ -22,6 +22,8 @@ urlpatterns = [
     path('author_request_accept/', views.author_request_accept_handle, name="AuthorRequestAcceptHandle"),
     path('author_panel/', views.author_panel, name="AuthorPanel"),
     path('password_change/', views.password_change, name="PasswordChange"),
+    path('reset_password_request/', views.reset_password_request, name="ResetPasswordRequest"),
+    path('reset/<uidb64>/<token>', views.reset_password_confirm, name='ResetPasswordConfirm'),
 
     # Another Approach To Change Password
     # path('password_change/', PasswordChangeView.as_view(

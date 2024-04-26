@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib import messages
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib.auth.decorators import login_required
 
 # For Give Permission To User
@@ -17,19 +17,23 @@ from blog.models import Post
 
 # For Sending Email, and Verified Email
 from django.conf import settings
-from .token import generate_token
+from .token import generate_token, account_activation_token
 from django.core.mail import EmailMessage, send_mail
 from django.contrib.sites.shortcuts import get_current_site
 from django.template.loader import render_to_string
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.utils.encoding import force_bytes, force_str
 
-# For Password Change
-from django.contrib.auth.forms import PasswordChangeForm
+# For Password Change Default Form
+# from django.contrib.auth.forms import PasswordChangeForm, PasswordResetForm, SetPasswordForm
+
 # After Change the Password The Session Is Reset Automatically, Update the Session
 from django.contrib.auth import update_session_auth_hash
+
 # Custom Form For Password Change
-from .forms import PasswordChangeForm
+from .forms import PasswordChangeForm, PasswordResetForm, SetPasswordForm
+
+from typing import Protocol
 
 
 # Create your views here
@@ -406,6 +410,106 @@ def password_change(request):
         fm = PasswordChangeForm(user=request.user)
 
     return render(request, "home/password_change.html", {'fm': fm})
+
+
+#  For Reset The Password
+def reset_password_request(request):
+    """
+    :param request:
+    :return: Send Email To User's Mail Account, With Some Instruction For Reset The Password
+    """
+    if request.method == 'POST':
+        fm = PasswordResetForm(request.POST)
+        if fm.is_valid():
+            # Fetch Data From From
+            user_email = fm.cleaned_data['email']
+            user = User.objects.filter(email=user_email).first()
+            # user = get_user_model().objects.filter(email=user_email).first()
+
+            if user:
+
+                if not user.is_active:
+                    messages.error(request, "Your are not active user, Please active your account first.")
+                    return redirect('Home')
+
+                # Send Instruction Email To User For Reset Password
+                current_site = get_current_site(request)
+                subject = "Password Reset Request."
+                message = render_to_string('home/password_reset_email_template.html', {
+                    'name': f"{user.first_name} {user.last_name}",
+                    'username': f"{user.username}",
+                    'domain': current_site.domain,
+                    'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+                    'token': generate_token.make_token(user),
+                    'protocol': 'https' if request.is_secure() else 'http'
+                })
+                email = EmailMessage(
+                    subject,
+                    message,
+                    settings.EMAIL_HOST_USER,
+                    [user.email]
+                )
+                email.fail_silently = True
+                # email.send()
+
+                if email.send():
+                    messages.success(request, """
+                        <h4>Password Reset Instruction</h4><hr>
+                        <p> 
+                            We've sent you an email with instructions on how to set your password, provided there's an 
+                            account associated with the email you entered. You should receive it soon.<br>If you don't 
+                            see the email, please double-check that you've entered the email address you used to 
+                            register, and take a look in your spam folder.
+                        </p>
+                    """)
+                else:
+                    messages.error(request, "Problem Sending Reset Password Email, <b>SERVER PROBLEM</b>")
+                return redirect('Home')
+            else:
+                messages.error(request, f"""
+                <h4>Email Not Found</h4><hr>
+                <p>{user_email} - This Email Is Not Associate With Any User. Please Try Again.</p>
+                """)
+                return redirect('Home')
+        else:
+            messages.error(request, "Something Went Wrong For Reset The Password. Please Try Again.")
+            return redirect('Home')
+    else:
+        fm = PasswordResetForm()
+
+    return render(request, "home/reset_password_request.html", {'fm': fm})
+
+
+def reset_password_confirm(request, uidb64, token):
+    try:
+        uid = force_str(urlsafe_base64_decode(uidb64))
+        user = User.objects.get(pk=uid)
+    except Exception as e:
+        user = None
+
+    if user is not None and generate_token.check_token(user, token):
+
+       #  print(f"BB*****************{user.password_reset_token_created}")
+        if request.method == 'POST':
+            fm = SetPasswordForm(user, request.POST)
+            if fm.is_valid():
+                fm.save()
+                # print(f"BB*****************{user.password_reset_token_created}")
+                # user.password_reset_token_created = None
+                messages.success(request, "Your New Password Has Been Set Success Fully. Now You Can Login With Your "
+                                          "New Password.")
+                return redirect('Home')
+            else:
+                for error in list(fm.errors.values()):
+                    messages.error(request, error)
+
+        fm = SetPasswordForm(user)
+        return render(request, 'home/password_reset_confirm.html', {'fm': fm})
+    else:
+        messages.error(request, "Link is expired")
+
+    messages.error(request, "Something Went Wrong Reset Your Passwords, Please Try Aging.")
+    return redirect('Home')
 
 
 def check_tiny(request):

@@ -109,7 +109,7 @@
                     </ul>
                 </div>
                 {% else %}
-                <!-- Register/Login trigger modal -->
+                <!-- Register/Login trigger Button modal -->
                 <div class="mx-2">
                     <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                         data-bs-target="#staticBackdrop-register">
@@ -121,6 +121,7 @@
                         Login
                     </button>
                 </div>
+                <!-- Register/Login trigger Button modal END-->
                 {% endif %}
             </div>
         </li>
@@ -188,8 +189,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        {% comment %} <button type="button" class="btn btn-secondary"
-                            data-bs-dismiss="modal">Close</button> {% endcomment %}
+                        <a class="link-danger link-offset-2" href="/reset_password_request/">Forget Password?</a>
                         <button type="submit" class="btn btn-primary">Register</button>
                     </div>
                 </form>
@@ -219,8 +219,7 @@
                             placeholder="Place Your Password" required>
                     </div>
                     <div class="modal-footer">
-                        {% comment %} <button type="button" class="btn btn-secondary"
-                            data-bs-dismiss="modal">Close</button> {% endcomment %}
+                        <a class="link-danger link-offset-2" href="/reset_password_request/">Forget Password?</a>
                         <button type="submit" class="btn btn-primary">Login</button>
                     </div>
                 </form>
@@ -279,11 +278,7 @@
                 <form action="" method="post">
                     {% csrf_token %}
 
-                    <div class="container my-2">
-                        {% if fm %}
-                            {{fm.as_p}}
-                        {% endif %}
-                    </div>
+                    
 
                     
                     <div class="modal-body">
