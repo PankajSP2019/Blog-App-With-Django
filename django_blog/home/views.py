@@ -418,6 +418,11 @@ def reset_password_request(request):
     :param request:
     :return: Send Email To User's Mail Account, With Some Instruction For Reset The Password
     """
+
+    if request.user.is_authenticated:
+        messages.error(request, "You are not allowed to reset password, while you are logged in.")
+        return redirect('Home')
+
     if request.method == 'POST':
         fm = PasswordResetForm(request.POST)
         if fm.is_valid():
@@ -481,6 +486,11 @@ def reset_password_request(request):
 
 
 def reset_password_confirm(request, uidb64, token):
+
+    if request.user.is_authenticated:
+        messages.error(request, "You are not allowed to reset password, while you are logged in.")
+        return redirect('Home')
+
     try:
         uid = force_str(urlsafe_base64_decode(uidb64))
         user = User.objects.get(pk=uid)
@@ -489,13 +499,11 @@ def reset_password_confirm(request, uidb64, token):
 
     if user is not None and generate_token.check_token(user, token):
 
-       #  print(f"BB*****************{user.password_reset_token_created}")
         if request.method == 'POST':
             fm = SetPasswordForm(user, request.POST)
             if fm.is_valid():
                 fm.save()
-                # print(f"BB*****************{user.password_reset_token_created}")
-                # user.password_reset_token_created = None
+
                 messages.success(request, "Your New Password Has Been Set Success Fully. Now You Can Login With Your "
                                           "New Password.")
                 return redirect('Home')
@@ -514,3 +522,7 @@ def reset_password_confirm(request, uidb64, token):
 
 def check_tiny(request):
     return render(request, "tinyMCE_example.html")
+
+
+def testing(request):
+    return render(request, 'testing.html')
