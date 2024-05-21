@@ -313,6 +313,8 @@ def author_request_reject_handle(request):
         au_re.status = "Rejected"
         au_re.save()
 
+        # Send Email To Author, Inform That His/Her Author Request Is Accepted.
+
         messages.warning(request, f"Request No. {ar_no}. Successfully Reject Author Request.")
         return redirect('AuthorRequestHandle')
     else:
@@ -365,6 +367,8 @@ def author_request_accept_handle(request):
             au_re = AuthorRequest.objects.filter(ar_no=ar_no, user=ar_user_pk, status="Pending")[0]
             au_re.status = "Accepted"
             au_re.save()
+
+            # Send Email To Author, Inform That His/Her Author Request Is Accepted.
 
         messages.success(request, "Successfully Accept Author Request.")
         return redirect('AuthorRequestHandle')
@@ -525,4 +529,5 @@ def check_tiny(request):
 
 
 def testing(request):
-    return render(request, 'testing.html')
+    last_three_blogs = Post.objects.all().order_by('-pno')[:3]
+    return render(request, 'testing.html', {'latest_blog': last_three_blogs})

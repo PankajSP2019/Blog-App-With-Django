@@ -55,7 +55,30 @@
                 <a href="/blog" class="btn btn-primary btn-lg">Get Started</a>
             </div>
         </div>
-        <div class="row mt-5">
+
+        <h3 class="my-4">Latest Blogs</h3>
+
+        <hr class="featurette-divider">
+
+        <center>
+            <div class="row my-4">
+                {% for blog in latest_blog %}
+                <div class="col-lg-4">
+            
+                    <img class="bd-placeholder-img rounded-circle" width="150" height="150" src="/media/{{ blog.image }}"
+                        alt="Description of image" role="img" aria-label="Placeholder" preserveAspectRatio="xMidYMid slice"
+                        focusable="false">
+                    <h3 class="fw-normal">{{blog.title}}.</h3>
+                    <a class="btn btn-secondary" href="/blog/{{blog.slug}}">View details &raquo;</a></p>
+                </div>
+                {% endfor %}
+            </div>
+        </center>
+
+        <hr class="featurette-divider">
+        
+
+        <!-- <div class="row mt-5">
             <div class="col-md-8">
                 <h3>Latest Blogs</h3>
                 <ul class="list-group">
@@ -76,7 +99,8 @@
                     <button type="submit" class="btn btn-primary">Subscribe</button>
                 </form>
             </div>
-        </div>
+        </div> -->
+
     </div>
     
     

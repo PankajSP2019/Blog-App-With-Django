@@ -3,7 +3,84 @@
 
 
 {% block css %}
+    <style>
+        .bd-placeholder-img {
+            font-size: 1.125rem;
+            text-anchor: middle;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            user-select: none;
+        }
     
+        @media (min-width: 768px) {
+            .bd-placeholder-img-lg {
+                font-size: 3.5rem;
+            }
+        }
+    
+        .b-example-divider {
+            width: 100%;
+            height: 3rem;
+            background-color: rgba(0, 0, 0, .1);
+            border: solid rgba(0, 0, 0, .15);
+            border-width: 1px 0;
+            box-shadow: inset 0 .5em 1.5em rgba(0, 0, 0, .1), inset 0 .125em .5em rgba(0, 0, 0, .15);
+        }
+    
+        .b-example-vr {
+            flex-shrink: 0;
+            width: 1.5rem;
+            height: 100vh;
+        }
+    
+        .bi {
+            vertical-align: -.125em;
+            fill: currentColor;
+        }
+    
+        .nav-scroller {
+            position: relative;
+            z-index: 2;
+            height: 2.75rem;
+            overflow-y: hidden;
+        }
+    
+        .nav-scroller .nav {
+            display: flex;
+            flex-wrap: nowrap;
+            padding-bottom: 1rem;
+            margin-top: -1px;
+            overflow-x: auto;
+            text-align: center;
+            white-space: nowrap;
+            -webkit-overflow-scrolling: touch;
+        }
+    
+        .btn-bd-primary {
+            --bd-violet-bg: #712cf9;
+            --bd-violet-rgb: 112.520718, 44.062154, 249.437846;
+    
+            --bs-btn-font-weight: 600;
+            --bs-btn-color: var(--bs-white);
+            --bs-btn-bg: var(--bd-violet-bg);
+            --bs-btn-border-color: var(--bd-violet-bg);
+            --bs-btn-hover-color: var(--bs-white);
+            --bs-btn-hover-bg: #6528e0;
+            --bs-btn-hover-border-color: #6528e0;
+            --bs-btn-focus-shadow-rgb: var(--bd-violet-rgb);
+            --bs-btn-active-color: var(--bs-btn-hover-color);
+            --bs-btn-active-bg: #5a23c8;
+            --bs-btn-active-border-color: #5a23c8;
+        }
+    
+        .bd-mode-toggle {
+            z-index: 1500;
+        }
+    
+        .bd-mode-toggle .dropdown-menu .active .bi {
+            display: block !important;
+        }
+    </style>
 {% endblock %}
 
 
@@ -22,7 +99,7 @@
                         </div>
 
                         <label>Password</label>
-                        <div class="input-group" id="show_hide_password">
+                        <div class="input-group" id="show_hide_password_2">
                             <input class="form-control" type="password">
                             <div class="input-group-text">
                                 <a href=""><i class="fa fa-eye-slash" aria-hidden="true"></i></a>
@@ -33,10 +110,127 @@
             </div>
         </div>
     </div>
+
+    <!-- Change Here -->
+
+    <ul class="list-group">
+        {% for blog in latest_blog %}
+        <li class="list-group-item"><a style="text-decoration: none; color: black;"
+                href="blog/{{blog.slug}}">{{blog.title}}</a></li>
+        {% endfor %}
+
+        <li class="list-group-item"><a style="text-decoration: none; color: black;" href="blog/{{blog.slug}}">{{latest_blog.0.title}}</a>
+        </li>
+    
+    </ul>
+
+    <main>
+    
+    
+        <div class="container marketing my-4">
+    
+            <!-- Three columns of text below the carousel -->
+            <div class="row">
+
+                {% for blog in latest_blog %}
+                    <div class="col-lg-4">
+                        
+                        <img class="bd-placeholder-img rounded-circle" width="150" height="150" src="/media/{{ blog.image }}"
+                            alt="Description of image" role="img" aria-label="Placeholder" preserveAspectRatio="xMidYMid slice"
+                            focusable="false">
+                        <h2 class="fw-normal">{{blog.title}}.</h2>
+                        <a class="btn btn-secondary" href="/blog/{{blog.slug}}">View details &raquo;</a></p>
+                    </div>
+                {% endfor %}
+    
+            <!-- START THE FEATURETTES -->
+    
+            <hr class="featurette-divider">
+    
+            <div class="row featurette">
+                <div class="col-md-7">
+                    <h2 class="featurette-heading fw-normal lh-1">{{latest_blog.0.title}}</h2>
+                    <p class="lead"><span id="preview" class="preview">{{latest_blog.0.content|truncatechars:500}}</span></p>
+                </div>
+                <div class="col-md-5">
+                    <svg class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto" width="500"
+                        height="500" src="/media/{{ post.image }}" role="img" aria-label="Placeholder: 500x500"
+                        preserveAspectRatio="xMidYMid slice" focusable="false">
+                        <title>Placeholder</title>
+                        <rect width="100%" height="100%" fill="var(--bs-secondary-bg)" /><text x="50%" y="50%"
+                            fill="var(--bs-secondary-color)" dy=".3em">500x500</text>
+                    </svg>
+                </div>
+            </div>
+    
+            <hr class="featurette-divider">
+    
+            <div class="row featurette">
+                <div class="col-md-7 order-md-2">
+                    <h2 class="featurette-heading fw-normal lh-1">Oh yeah, it’s that good. <span
+                            class="text-body-secondary">See for yourself.</span></h2>
+                    <p class="lead">Another featurette? Of course. More placeholder content here to give you an idea of how
+                        this layout would work with some actual real-world content in place.</p>
+                </div>
+                <div class="col-md-5 order-md-1">
+                    <svg class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto" width="500"
+                        height="500" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: 500x500"
+                        preserveAspectRatio="xMidYMid slice" focusable="false">
+                        <title>Placeholder</title>
+                        <rect width="100%" height="100%" fill="var(--bs-secondary-bg)" /><text x="50%" y="50%"
+                            fill="var(--bs-secondary-color)" dy=".3em">500x500</text>
+                    </svg>
+                </div>
+            </div>
+    
+            <hr class="featurette-divider">
+    
+            <div class="row featurette">
+                <div class="col-md-7">
+                    <h2 class="featurette-heading fw-normal lh-1">And lastly, this one. <span
+                            class="text-body-secondary">Checkmate.</span></h2>
+                    <p class="lead">And yes, this is the last block of representative placeholder content. Again, not really
+                        intended to be actually read, simply here to give you a better view of what this would look like
+                        with some actual content. Your content.</p>
+                </div>
+                <div class="col-md-5">
+                    <svg class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto" width="500"
+                        height="500" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: 500x500"
+                        preserveAspectRatio="xMidYMid slice" focusable="false">
+                        <title>Placeholder</title>
+                        <rect width="100%" height="100%" fill="var(--bs-secondary-bg)" /><text x="50%" y="50%"
+                            fill="var(--bs-secondary-color)" dy=".3em">500x500</text>
+                    </svg>
+                </div>
+            </div>
+    
+            <hr class="featurette-divider">
+    
+            <!-- /END THE FEATURETTES -->
+    
+        </div><!-- /.container -->
+    
+    
+        <!-- FOOTER -->
+        <footer class="container">
+            <p class="float-end"><a href="#">Back to top</a></p>
+            <p>&copy; 2017–2024 Company, Inc. &middot; <a href="#">Privacy</a> &middot; <a href="#">Terms</a></p>
+        </footer>
+    </main>
+
+
 {% endblock %}
 
 {% block script %}
     <script>
+
+
+    let previews = document.getElementsByClassName('preview');
+        Array.from(previews).forEach((element) => {
+            element.innerHTML = element.textContent;
+        });
+
+
         $(document).ready(function () {
                 $("#show_hide_password a").on('click', function (event) {
                     event.preventDefault();
@@ -48,6 +242,19 @@
                         $('#show_hide_password input').attr('type', 'text');
                         $('#show_hide_password i').removeClass("fa-eye-slash");
                         $('#show_hide_password i').addClass("fa-eye");
+                    }
+                });
+
+                $("#show_hide_password_2 a").on('click', function (event) {
+                    event.preventDefault();
+                    if ($('#show_hide_password_2 input').attr("type") == "text") {
+                        $('#show_hide_password_2 input').attr('type', 'password');
+                        $('#show_hide_password_2 i').addClass("fa-eye-slash");
+                        $('#show_hide_password_2 i').removeClass("fa-eye");
+                    } else if ($('#show_hide_password_2 input').attr("type") == "password") {
+                        $('#show_hide_password_2 input').attr('type', 'text');
+                        $('#show_hide_password_2 i').removeClass("fa-eye-slash");
+                        $('#show_hide_password_2 i').addClass("fa-eye");
                     }
                 });
             });
