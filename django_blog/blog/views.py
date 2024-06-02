@@ -16,6 +16,7 @@ def blogHome(request):
     return render(request, "blog/bloghome.html", context)
 
 
+# Show Or Display Blog, With Comment
 def blogPost(request, slug):
     post = Post.objects.filter(slug=slug).first()
     if post is not None:
@@ -34,8 +35,8 @@ def blogPost(request, slug):
         return HttpResponse("404 - Some Error Occurs")
 
 
+# Function For Posting Comment
 def postComment(request):
-    print('hello')
     if request.method == "POST":
         comment = request.POST.get('comment')
         user = request.user
@@ -109,14 +110,13 @@ def PostBlog(request):
                          content=blog_content, summary=blog_summary, image=image)
         post_blog.save()
 
-        # print(title, category, image, blog_content, blog_summary)
-        # print(author_name, user)
-
         messages.success(request, "Post Blog Successfully.")
         return redirect('PostBlog')
 
     return render(request, "home/add_blog.html")
 
+
+# Function For Edit Blog
 @login_required(login_url="/")
 def EditBlog(request, pid):
     blog_post = Post.objects.filter(user=request.user, pno=pid)[0]

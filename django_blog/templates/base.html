@@ -26,6 +26,11 @@
 
 
     <style>
+
+        .pp{
+            cursor: pointer;
+        }
+
         .footer {
             background: linear-gradient(to right, #007bff, #6c757d);
             color: white;
@@ -35,33 +40,33 @@
 
         
         
-    body {
-    --sb-track-color: #232E33;
-    --sb-thumb-color: #6BAF8D;
-    --sb-size: 10px;
-    }
+        body {
+        --sb-track-color: #232E33;
+        --sb-thumb-color: #6BAF8D;
+        --sb-size: 10px;
+        }
 
-    body::-webkit-scrollbar {
-    width: var(--sb-size)
-    }
+        body::-webkit-scrollbar {
+        width: var(--sb-size)
+        }
 
-    body::-webkit-scrollbar-track {
-    background: var(--sb-track-color);
-    border-radius: 20px;
-    }
+        body::-webkit-scrollbar-track {
+        background: var(--sb-track-color);
+        border-radius: 20px;
+        }
 
-    body::-webkit-scrollbar-thumb {
-    background: var(--sb-thumb-color);
-    border-radius: 20px;
-    border: 1px solid #232E33;
-    }
+        body::-webkit-scrollbar-thumb {
+        background: var(--sb-thumb-color);
+        border-radius: 20px;
+        border: 1px solid #232E33;
+        }
 
-    @supports not selector(::-webkit-scrollbar) {
-    body {
-        scrollbar-color: var(--sb-thumb-color)
-                        var(--sb-track-color);
-    }
-    }
+        @supports not selector(::-webkit-scrollbar) {
+            body {
+                scrollbar-color: var(--sb-thumb-color)
+                                var(--sb-track-color);
+            }
+        }
     </style>
 
     {% block css %} {% endblock %}
@@ -96,8 +101,13 @@
                     {% if user.is_authenticated %}
                     <!-- Check If the User is the Super User Is Not -->
                     {% if user.is_superuser %}
+                    <!-- Show Author Request List To Admin -->
                     <li class="nav-item">
                         <a class="nav-link {% block superactive  %}{% endblock %}" href="/author_request_handle">Author Request</a>
+                    </li>
+                   <!--  Show User Query To Admin - Contact Us List -->
+                    <li class="nav-item">
+                        <a class="nav-link {% block userqueryactive  %}{% endblock %}" href="#">User's Query</a>
                     </li>
                     {% endif %}
                     <!-- Check If the User is the Is Author Is Not, Cheeck by Session -->
@@ -132,7 +142,7 @@
                                 {% endif %}
                                 <!-- Become Author -->
                                 {% if not request.session.is_author %}
-                                <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#staticBackdrop-become-author">Become An Author?</a>
+                                <li><a class="dropdown-item pp" data-bs-toggle="modal" data-bs-target="#staticBackdrop-become-author">Become An Author?</a>
                                 </li>
                                 {% endif %}
                                 <li><a class="dropdown-item" href="/password_change/">Change Password?</a></li>

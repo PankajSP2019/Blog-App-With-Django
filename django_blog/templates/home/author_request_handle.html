@@ -5,6 +5,17 @@
 {% block superactive %} active {% endblock %}
 {% load humanize %}
 
+{% load static %}
+{% block css %}
+<style>
+    body {
+        background-image: url("{% static 'home/b1.jpg' %}");
+    }
+</style>
+{% endblock %}
+
+
+
 {% block body %}
 
     <!-- Alert Button For Showing the Messages-->
@@ -20,151 +31,174 @@
 
     <div class="container my-4">
         <div class="row">
-            <div class="col-md-8">
-                <h2 class="border-bottom">Pending Author Request List</h2>
-                <table class="table table-hover table-borderless table-sm ">
-                    <thead>
-                        <tr>
-                            <th scope="col">#ID</th>
-                            <th scope="col">User Name</th>
-                            <th scope="col">Name</th>
-                            <th scope="col">About Author</th>
-                            <th scope="col">Request Time</th>
-                            <th scope="col">Oparetions</th>
-                        </tr>
-                    </thead>
-                    <tbody class="table-group-divider">
-                        {% for author_request in all_author_request %}
-                            {% if author_request.status == "Pending" %}
-                                <tr>
-                                    <th scope="row">{{author_request.ar_no}}</th>
-                                    <td>{{author_request.user.username}}</td>
-                                    <td>{{author_request.user.first_name}} {{author_request.user.last_name}}</td>
-                                    <td><button class="btn btn-primary btn-sm" data-bs-toggle="modal"
-                                        data-bs-target="#staticBackdrop-about-author-{{author_request.ar_no}}">Show</button></td>
-                                    <td>{{author_request.timestamp|naturaltime}}</td>
-                                    <td><button class="btn btn-primary btn-sm"              
-                                        data-bs-toggle="modal" data-bs-target="#staticBackdrop-accept-{{author_request.ar_no}}">Aceept</button> <button class="btn btn-danger btn-sm" data-bs-toggle="modal"
-                                        data-bs-target="#staticBackdrop-reject-{{author_request.ar_no}}">Reject</button></td>
-                                </tr> 
-                                <!-- About Author Modal -->
-                                <div class="modal fade " id="staticBackdrop-about-author-{{author_request.ar_no}}" data-bs-backdrop="static" data-bs-keyboard="false"
-                                    tabindex="-1" aria-labelledby="staticBackdrop-about-author" aria-hidden="true">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h1 class="modal-title fs-5" id="staticBackdrop-about-author">About Author</h1>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                            </div>
-                                            <div class="modal-body">
-                                                {{author_request.about_author}}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- End About Author Modal -->
-                                <!--  Reject Modal -->
-                                <div class="modal fade " id="staticBackdrop-reject-{{author_request.ar_no}}" data-bs-backdrop="static"
-                                    data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdrop-reject-{{author_request.ar_no}}" aria-hidden="true">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h1 class="modal-title fs-5" id="staticBackdrop-reject-{{author_request.ar_no}}">Reject Author Request</h1>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                            </div>
-                                            <form action="/author_request_reject/"   
-                                            
-                                                method="post" id="author_request_reject">
-                                                {% csrf_token %}
-                                                <div class="modal-body">
-                                                    <div class="d-flex shadow p-1  mb-2 bg-body-tertiary rounded justify-content-center">
-                                                        <h5><span class="badge text-bg-primary">User Name:  </span>    {{author_request.user.username}}</h5> 
-                                                    </div>
 
-                                                    <input type="hidden" name="ar_no" value="{{author_request.ar_no}}" >
-                                                    <input type="hidden" name="ar_user" value="{{author_request.user.pk}}">
-                                                    
-                                                    <div class="mb-3">
-                                                        <label for="reject_reason" class="form-label">Reject Reasons</label>
-                                                        <textarea name="reject_reason" class="form-control" id="reject_reason" rows="3" required></textarea>
-                                                    </div>
-                                                </div>
-                                                <div class="modal-footer">
-                                                
-                                                    <button name="reject-button" type="submit" class="btn btn-danger">Reject</button>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- End Reject Modal -->
-                                <!-- Accept Modal -->
-                                <div class="modal fade" id="staticBackdrop-accept-{{author_request.ar_no}}" data-bs-backdrop="static"
-                                    data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdrop-accept-{{author_request.ar_no}}"
-                                    aria-hidden="true">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content">
+            <!-- Author Request List -->
+            <div class="col-md-8">
+                <div class="shadow-lg p-3 mb-5 bg-body-tertiary rounded">
+                    <h2 class="border-bottom">Pending Author Request List</h2>
+                    {% if author_requests %}
+                        <table class="table table-hover table-borderless table-sm ">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#ID</th>
+                                    <th scope="col">User Name</th>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">About Author</th>
+                                    <th scope="col">Request Time</th>
+                                    <th scope="col">Oparetions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="table-group-divider">
+                                {% for author_request in author_requests %}
+                                    <tr>
+                                        <th scope="row">{{author_request.ar_no}}</th>
+                                        <td>{{author_request.user.username}}</td>
+                                        <td>{{author_request.user.first_name}} {{author_request.user.last_name}}</td>
+                                        <td><button class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                                            data-bs-target="#staticBackdrop-about-author-{{author_request.ar_no}}">Show</button></td>
+                                        <td>{{author_request.timestamp|naturaltime}}</td>
+                                        <td><button class="btn btn-primary btn-sm my-2"              
+                                            data-bs-toggle="modal" data-bs-target="#staticBackdrop-accept-{{author_request.ar_no}}">Aceept</button> <button class="btn btn-danger btn-sm" data-bs-toggle="modal"
+                                            data-bs-target="#staticBackdrop-reject-{{author_request.ar_no}}">Reject</button></td>
+                                    </tr> 
+                                    <!-- About Author Modal -->
+                                    <div class="modal fade " id="staticBackdrop-about-author-{{author_request.ar_no}}" data-bs-backdrop="static" data-bs-keyboard="false"
+                                        tabindex="-1" aria-labelledby="staticBackdrop-about-author" aria-hidden="true">
+                                        <div class="modal-dialog">
                                             <div class="modal-content">
                                                 <div class="modal-header">
-                                                    <h1 class="modal-title fs-5" id="staticBackdrop-accept-{{author_request.ar_no}}">Reject Author Request</h1>
+                                                    <h1 class="modal-title fs-5" id="staticBackdrop-about-author">About Author</h1>
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                 </div>
-                                            <form action="/author_request_accept/" method="post" id="">
-                                                {% csrf_token %}
                                                 <div class="modal-body">
-                                                    <div class="d-flex shadow p-1  mb-2 bg-body-tertiary rounded justify-content-center">
-                                                        <h5><span class="badge text-bg-primary">User Name: </span> {{author_request.user.username}}</h5>
-                                                    </div>
-                                                    <!-- Switch For Give Permission -->
-                                                    <div class="my-4 mb-2">
-                                                        <div class="form-check form-switch">
-                                                            <input class="form-check-input" type="checkbox" name="add_perms" role="switch" id="add_perms" checked>
-                                                            <label class="form-check-label" for="add_perms">Add Blog Permission</label>
-                                                        </div>
-                                                        <!-- Hiddin Inputs For pass The Important Details -->
-                                                        <input type="hidden" name="ar_no" value="{{author_request.ar_no}}">
-                                                        <input type="hidden" name="ar_user" value="{{author_request.user}}">
-                                                        <input type="hidden" name="ar_user_pk" value="{{author_request.user.pk}}">
-
-                                                        <div class="form-check form-switch">
-                                                            <input class="form-check-input" type="checkbox" name="view_perms" role="switch" id="view_perms">
-                                                            <label class="form-check-label" for="view_perms"><span class="badge text-bg-warning text-wrap">View Blog Permission</span> </label>
-                                                        </div>
-                                                        <div class="form-check form-switch">
-                                                            <input class="form-check-input" type="checkbox" name="delete_perms" role="switch" id="delete_perms">
-                                                            <label class="form-check-label" for="delete_perms"><span class="badge text-bg-warning text-wrap">Delete Blog Permission</span></label>
-                                                        </div>
-                                                        
-                                                        <div class="form-check form-switch">
-                                                            <input class="form-check-input" type="checkbox" name="change_perms" role="switch" id="change_perms">
-                                                            <label class="form-check-label" for="change_perms"><span class="badge text-bg-warning text-wrap">Edit Blog Permission</span></label>
-                                                        </div>
-                                                    </div>                           
-                                                    
+                                                    {{author_request.about_author}}
                                                 </div>
-                                                <div class="modal-footer">
-                                
-                                                    <button type="submit" name="accept_button" class="btn btn-primary">Accept</button>
-                                                </div>
-                                            </form>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <!-- End Accept Modal -->
-                            {% endif %}
-                        {% endfor %}
-                        
-                    </tbody>
-                </table>
+                                    <!-- End About Author Modal -->
+                                    <!--  Reject Modal -->
+                                    <div class="modal fade " id="staticBackdrop-reject-{{author_request.ar_no}}" data-bs-backdrop="static"
+                                        data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdrop-reject-{{author_request.ar_no}}" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h1 class="modal-title fs-5" id="staticBackdrop-reject-{{author_request.ar_no}}">Reject Author Request</h1>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <form action="/author_request_reject/"   
+                                                
+                                                    method="post" id="author_request_reject">
+                                                    {% csrf_token %}
+                                                    <div class="modal-body">
+                                                        <div class="d-flex shadow p-1  mb-2 bg-body-tertiary rounded justify-content-center">
+                                                            <h5><span class="badge text-bg-primary">User Name:  </span>    {{author_request.user.username}}</h5> 
+                                                        </div>
 
-                
-                
-                
+                                                        <input type="hidden" name="ar_no" value="{{author_request.ar_no}}" >
+                                                        <input type="hidden" name="ar_user" value="{{author_request.user.pk}}">
+                                                        
+                                                        <div class="mb-3">
+                                                            <label for="reject_reason" class="form-label">Reject Reasons</label>
+                                                            <textarea name="reject_reason" class="form-control" id="reject_reason" rows="3" required></textarea>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                    
+                                                        <button name="reject-button" type="submit" class="btn btn-danger">Reject</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- End Reject Modal -->
+                                    <!-- Accept Modal -->
+                                    <div class="modal fade" id="staticBackdrop-accept-{{author_request.ar_no}}" data-bs-backdrop="static"
+                                        data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdrop-accept-{{author_request.ar_no}}"
+                                        aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h1 class="modal-title fs-5" id="staticBackdrop-accept-{{author_request.ar_no}}">Reject Author Request</h1>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                <form action="/author_request_accept/" method="post" id="">
+                                                    {% csrf_token %}
+                                                    <div class="modal-body">
+                                                        <div class="d-flex shadow p-1  mb-2 bg-body-tertiary rounded justify-content-center">
+                                                            <h5><span class="badge text-bg-primary">User Name: </span> {{author_request.user.username}}</h5>
+                                                        </div>
+                                                        <!-- Switch For Give Permission -->
+                                                        <div class="my-4 mb-2">
+                                                            <div class="form-check form-switch">
+                                                                <input class="form-check-input" type="checkbox" name="add_perms" role="switch" id="add_perms" checked>
+                                                                <label class="form-check-label" for="add_perms">Add Blog Permission</label>
+                                                            </div>
+                                                            <!-- Hiddin Inputs For pass The Important Details -->
+                                                            <input type="hidden" name="ar_no" value="{{author_request.ar_no}}">
+                                                            <input type="hidden" name="ar_user" value="{{author_request.user}}">
+                                                            <input type="hidden" name="ar_user_pk" value="{{author_request.user.pk}}">
+
+                                                            <div class="form-check form-switch">
+                                                                <input class="form-check-input" type="checkbox" name="view_perms" role="switch" id="view_perms">
+                                                                <label class="form-check-label" for="view_perms"><span class="badge text-bg-warning text-wrap">View Blog Permission</span> </label>
+                                                            </div>
+                                                            <div class="form-check form-switch">
+                                                                <input class="form-check-input" type="checkbox" name="delete_perms" role="switch" id="delete_perms">
+                                                                <label class="form-check-label" for="delete_perms"><span class="badge text-bg-warning text-wrap">Delete Blog Permission</span></label>
+                                                            </div>
+                                                            
+                                                            <div class="form-check form-switch">
+                                                                <input class="form-check-input" type="checkbox" name="change_perms" role="switch" id="change_perms">
+                                                                <label class="form-check-label" for="change_perms"><span class="badge text-bg-warning text-wrap">Edit Blog Permission</span></label>
+                                                            </div>
+                                                        </div>                           
+                                                        
+                                                    </div>
+                                                    <div class="modal-footer">
+                                    
+                                                        <button type="submit" name="accept_button" class="btn btn-primary">Accept</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- End Accept Modal -->
+                            
+                                {% endfor %}
+                                
+                            </tbody>
+                        </table>
+                    {% else %}
+                        <div class="alert alert-warning" role="alert">
+                            No, Pending Author Reuests.
+                        </div>
+                    {% endif %}
+                </div> 
             </div>
-            <div class="col-md-4">
-                Hello
+            <!-- Show Active Author List -->
+            <div class="col-md-3 mx-2 ">
+                <div class="shadow-lg p-3 mb-5 bg-body-tertiary rounded">
+                    <h2 class="border-bottom">Active Author List</h2>
+                    <ul class="list-group">
+                        {% for author in author_blog_count %}
+                            <li class="list-group-item d-flex justify-content-between align-items-start">
+                                <div class="ms-2 me-auto">
+                                    <div class="fw-bold">{{ author.0 }}</div>
+                                    Blog Count :  <span class="badge text-bg-primary rounded-pill">{{author.1}}</span>
+                                </div>
+                                
+                            </li>
+                        {% endfor %}
+                    </ul>                   
+                </div>
+                
             </div>
 
         </div>
     </div>
 {% endblock %}
+
+<!-- For just Remove the Footer -->
+{% block footer %} {% endblock %}

@@ -283,28 +283,44 @@ def authorRequest(request):
         return HttpResponse("Something Went Wrong")
 
 
+# Show All Author Request Information To Super User/Admin Only
 @login_required(login_url="/")
 def author_request_handle(request):
     if request.user.is_superuser:
-        all_author_request = AuthorRequest.objects.all()
-        return render(request, "home/author_request_handle.html", {'all_author_request': all_author_request})
+
+        # Pending Author Request
+        all_author_request = AuthorRequest.objects.filter(status="Pending")
+
+        # Just For Show The Author List And Their Blog Count
+        # Author List
+        author_list = UserProfile.objects.filter(is_author=True)
+        print(author_list)
+
+        # Author's Blog Count
+        author_blog_count = []
+        for i in author_list:
+            blog_count = Post.objects.filter(user=i.user).count()
+            author_blog_count.append([f"{i.user.first_name} {i.user.last_name}",blog_count])
+
+        return render(request, "home/author_request_handle.html", {'author_requests': all_author_request, 'author_blog_count': author_blog_count})
     else:
         messages.error(request, "You Are Not Allowed To Visit This Page.")
         # It Redirects to the Same page From Where This Request Call
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
+# This Function Is For Author Request Rejection
 @login_required(login_url="/")
 def author_request_reject_handle(request):
+    """
+    :param request:
+    :return: Status of the author request will be rejected, and send a rejection mail to author's email address.
+    """
     # We can use here request.user.is_authenticated
     if request.method == "POST":
         reject_reason = request.POST['reject_reason']
         ar_no = request.POST['ar_no']
         ar_user_pk = request.POST['ar_user']
-
-        # print(reject_reason)
-        # print(ar_no)
-        # print(ar_user)
 
         # Author Reject Operation
         au_re = AuthorRequest.objects.filter(ar_no=ar_no, user=ar_user_pk).exclude(status="Rejected")[0]
@@ -313,7 +329,35 @@ def author_request_reject_handle(request):
         au_re.status = "Rejected"
         au_re.save()
 
-        # Send Email To Author, Inform That His/Her Author Request Is Accepted.
+        # Send Email To Author, Inform That His/Her Author Request Is Rejected.
+        user = User.objects.filter(pk=ar_user_pk)[0]
+
+        # Email message, Yes Its messy, Please Ignore it.
+        reject_message = f"""Thank you for your interest in becoming an author for BlogSphere. We appreciate the time and effort you invested in your application and your enthusiasm for contributing to our platform.
+        
+After careful consideration, we regret to inform you that we have decided not to move forward with your application at this time. This decision was not made lightly, and it reflects our current needs and priorities for the blog.
+        
+Reject Reason : {reject_reason}
+
+Please understand that this is not a reflection of your abilities or potential. We encourage you to continue pursuing your passion for writing and to keep us in mind for future opportunities.
+        
+If you have any questions or would like feedback on your application, please feel free to reach out. We wish you the best in your future endeavors and hope to see you as a valued member of our reader community."""
+
+        subject = "Regarding Author Request-BlogSphere."
+        message = render_to_string('home/author_request_handle_mail.html', {
+            'name': f"{user.first_name} {user.last_name}",
+            'message': reject_message,
+            'ar_no': ar_no,
+
+        })
+        email = EmailMessage(
+            subject,
+            message,
+            settings.EMAIL_HOST_USER,
+            [user.email]
+        )
+        email.fail_silently = True
+        email.send()
 
         messages.warning(request, f"Request No. {ar_no}. Successfully Reject Author Request.")
         return redirect('AuthorRequestHandle')
@@ -339,20 +383,21 @@ def author_request_accept_handle(request):
         else:
             # Give Permission Will here
             user = User.objects.get(pk=ar_user_pk)
+            permission_list = []
             if add_p == 'on':
-                print("Add Permission Give Here")
+                permission_list.append("Add Permission")
                 add_blog_permission = Permission.objects.get(name="Can add post")
                 user.user_permissions.add(add_blog_permission)
             if view_p == 'on':
-                print("View Permission Give Here")
+                permission_list.append("View Permission")
                 view_blog_permission = Permission.objects.get(name="Can view post")
                 user.user_permissions.add(view_blog_permission)
             if delete_p == 'on':
-                print("Delete Permission Give Here")
+                permission_list.append("Delete Permission")
                 delete_blog_permission = Permission.objects.get(name="Can delete post")
                 user.user_permissions.add(delete_blog_permission)
             if change_p == 'on':
-                print("Change Permission Give Here")
+                permission_list.append("Change Permission")
                 change_blog_permission = Permission.objects.get(name="Can change post")
                 user.user_permissions.add(change_blog_permission)
 
@@ -369,6 +414,33 @@ def author_request_accept_handle(request):
             au_re.save()
 
             # Send Email To Author, Inform That His/Her Author Request Is Accepted.
+            user = User.objects.filter(pk=ar_user_pk)[0]
+
+            # Email message, Yes Its messy, Please Ignore it.
+            accept_message = f"""We are pleased to inform you that your Request to become an author for BlogSphere has been accepted!
+
+Now, you have the access of Author Panel, where you can show your creativity.
+
+Permission List : {permission_list}
+
+Welcome aboard! We look forward to your contributions. If you have any questions, feel free to reach out.
+"""
+
+            subject = "Regarding Author Request-BlogSphere."
+            message = render_to_string('home/author_request_handle_mail.html', {
+                'name': f"{user.first_name} {user.last_name}",
+                'message': accept_message,
+                'ar_no': ar_no
+
+            })
+            email = EmailMessage(
+                subject,
+                message,
+                settings.EMAIL_HOST_USER,
+                [user.email]
+            )
+            email.fail_silently = True
+            email.send()
 
         messages.success(request, "Successfully Accept Author Request.")
         return redirect('AuthorRequestHandle')
@@ -490,7 +562,6 @@ def reset_password_request(request):
 
 
 def reset_password_confirm(request, uidb64, token):
-
     if request.user.is_authenticated:
         messages.error(request, "You are not allowed to reset password, while you are logged in.")
         return redirect('Home')

@@ -20,8 +20,6 @@ class Contact_H(models.Model):
 class UserProfile(models.Model):
     up_no = models.AutoField(primary_key=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    # dob = models.DateField()
-    # address = models.TextField(max_length=500)
     profile_picture = models.ImageField(upload_to="home/user_image")
     is_author = models.BooleanField(default=False)
 
@@ -29,6 +27,7 @@ class UserProfile(models.Model):
         return f"Profile ID-{self.up_no} UserName-{self.user.username} Is_Author-{self.is_author}"
 
 
+# Author Request
 class AuthorRequest(models.Model):
     CATEGORY_CHOICES = [
         ('Pending', 'Pending'),
