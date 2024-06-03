@@ -24,6 +24,7 @@ urlpatterns = [
     path('password_change/', views.password_change, name="PasswordChange"),
     path('reset_password_request/', views.reset_password_request, name="ResetPasswordRequest"),
     path('reset/<uidb64>/<token>', views.reset_password_confirm, name='ResetPasswordConfirm'),
+    path('users_query/', views.user_query_handle, name='UserQueryHandle'),
     path('testing', views.testing, name='Testing'),
 
     # Another Approach To Change Password

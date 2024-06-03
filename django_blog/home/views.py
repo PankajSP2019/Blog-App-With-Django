@@ -72,6 +72,31 @@ def contact(request):
     return render(request, 'home/contact.html')
 
 
+@login_required(login_url="/")
+def user_query_handle(request):
+    if request.user.is_superuser:
+        users_query = Contact_H.objects.filter(is_action_taken=False).order_by('timeStamp')
+
+        if request.method == 'POST':
+            name = request.POST.get('user_name')
+            email = request.POST.get('user_email')
+            query_sno = request.POST.get('query_sno')
+            reply_message = request.POST.get('reply_message')
+
+            # Sent Reply email
+
+            # Update Model Contact_H is_action_taken=True
+
+            messages.success(request, f"Sno:{query_sno} Reply Sent To : {name} Successfully ")
+            return redirect('UserQueryHandle')
+
+        return render(request, "home/users_query.html", {'users_query': users_query})
+    else:
+        messages.error(request, "You Are Not Allowed To Visit This Page.")
+        # It Redirects to the Same page From Where This Request Call
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+
 def about(request):
     return render(request, 'home/about.html')
 
@@ -300,9 +325,10 @@ def author_request_handle(request):
         author_blog_count = []
         for i in author_list:
             blog_count = Post.objects.filter(user=i.user).count()
-            author_blog_count.append([f"{i.user.first_name} {i.user.last_name}",blog_count])
+            author_blog_count.append([f"{i.user.first_name} {i.user.last_name}", blog_count])
 
-        return render(request, "home/author_request_handle.html", {'author_requests': all_author_request, 'author_blog_count': author_blog_count})
+        return render(request, "home/author_request_handle.html",
+                      {'author_requests': all_author_request, 'author_blog_count': author_blog_count})
     else:
         messages.error(request, "You Are Not Allowed To Visit This Page.")
         # It Redirects to the Same page From Where This Request Call
@@ -594,6 +620,8 @@ def reset_password_confirm(request, uidb64, token):
     messages.error(request, "Something Went Wrong Reset Your Passwords, Please Try Aging.")
     return redirect('Home')
 
+
+# This Function Is For Handle The User's Query, Which From Contact Us Section
 
 def check_tiny(request):
     return render(request, "tinyMCE_example.html")
