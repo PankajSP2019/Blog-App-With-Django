@@ -25,12 +25,12 @@
 
     <!-- Alert Button For Showing the Messages-->
     {% if messages %} <!-- main condition-->
-    {% for message in messages %}
-    <div {% if message.tags %} class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert" {% endif %}>
-        <strong>{{ message }}</strong>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-    {% endfor %}
+        {% for message in messages %}
+            <div {% if message.tags %} class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert" {% endif %}>
+                <strong>{{ message }}</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
     {% endif %} <!-- END main condition-->
 
     <div class="row">
@@ -81,41 +81,45 @@
                     </div>
                     <!-- Show User Query Modal -->
                     <!--  Sent Reply Modal -->
-                    <div class="modal fade " id="staticBackdrop-sent-reply-{{users_query.sno}}" data-bs-backdrop="static"
-                        data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdrop-sent-reply-{{users_query.sno}}"
-                        aria-hidden="true">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h1 class="modal-title fs-5" id="staticBackdrop-reject-{{author_request.ar_no}}">Sent Reply</h1>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <form action="/users_query/" method="post">
-                                    {% csrf_token %}
-                                    <div class="modal-body">
-        
-                                        <input type="hidden" name="user_name" value="{{users_query.name}}">
-                                        <input type="hidden" name="user_email" value="{{users_query.email}}">
-                                        <input type="hidden" name="query_sno" value="{{users_query.sno}}">
-        
-                                        <div class="mb-3">
-                                            <label for="sent_reply" class="form-label">Reply Message</label>
-                                            <textarea name="reply_message" class="form-control" id="sent_reply" rows="3"
-                                                required></textarea>
+                        <div class="modal fade " id="staticBackdrop-sent-reply-{{users_query.sno}}" data-bs-backdrop="static"
+                            data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdrop-sent-reply-{{users_query.sno}}"
+                            aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h1 class="modal-title fs-5" id="staticBackdrop-reject-{{author_request.ar_no}}">Sent Reply</h1>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <form action="/users_query/" method="post">
+                                        {% csrf_token %}
+                                        <div class="modal-body">
+            
+                                            <input type="hidden" name="user_name" value="{{users_query.name}}">
+                                            <input type="hidden" name="user_email" value="{{users_query.email}}">
+                                            <input type="hidden" name="query_sno" value="{{users_query.sno}}">
+
+                                            <label class="form-label"><b>User's Message</b></label>
+                                            <div class="d-flex shadow p-1  mb-2 bg-body-tertiary rounded">
+                                                <p>{{users_query.content}}</p>
+                                            </div>
+            
+                                            <div class="mb-3">
+                                                <label for="sent_reply" class="form-label"><b>Reply Message - Only Write The Message</b></label>
+                                                <textarea name="reply_message" class="form-control" id="sent_reply" rows="3"
+                                                    required></textarea>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="modal-footer">
-        
-                                        <button name="reply-button" type="submit" class="btn btn-success">Reply</button>
-                                    </div>
-                                </form>
+                                        <div class="modal-footer">
+            
+                                            <button name="reply-button" type="submit" class="btn btn-success">Reply</button>
+                                        </div>
+                                    </form>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <!-- End Reject Modal -->
-                    
-        
-                        {% endfor %}
+                        <!-- Sent Reply Modal -->
+                   
+                    {% endfor %}
         
                 </tbody>
             </table>

@@ -36,15 +36,14 @@ from .forms import PasswordChangeForm, PasswordResetForm, SetPasswordForm
 from typing import Protocol
 
 
-# Create your views here
-
-
+# Home Page-Landing Page
 def home(request):
     # To show latest blog in home page
     last_three_blogs = Post.objects.all().order_by('-pno')[:3]
     return render(request, 'home/home.html', {'latest_blog': last_three_blogs})
 
 
+# This Function Is For User's Query, User Sent Message To Admin
 def contact(request):
     if request.method == 'POST':
         name = request.POST.get('fullname')
@@ -66,12 +65,12 @@ def contact(request):
             c = Contact_H(name=name, email=email, phone=phone, content=content)
             c.save()
             messages.success(request, "You Successfully Drop Your Message, We will Contact Soon.")
-            # messages.error(request, "Test")
             return redirect('Contact')
 
     return render(request, 'home/contact.html')
 
 
+# This Function Is For Reply To The User's Query-From Contact Us
 @login_required(login_url="/")
 def user_query_handle(request):
     if request.user.is_superuser:
@@ -84,8 +83,26 @@ def user_query_handle(request):
             reply_message = request.POST.get('reply_message')
 
             # Sent Reply email
+            # Send Welcome Email & Email Verification
+            subject = "Regarding Your Query-BlogSphere."
+            message = render_to_string('home/users_query_sent_reply_mail.html', {
+                'name': name,
+                'reply_message': reply_message,
+                'sno': query_sno
+            })
+            email = EmailMessage(
+                subject,
+                message,
+                settings.EMAIL_HOST_USER,
+                [email]
+            )
+            email.fail_silently = True
+            email.send()
 
             # Update Model Contact_H is_action_taken=True
+            update_query = Contact_H.objects.filter(sno=query_sno)[0]
+            update_query.is_action_taken = True
+            update_query.save()
 
             messages.success(request, f"Sno:{query_sno} Reply Sent To : {name} Successfully ")
             return redirect('UserQueryHandle')
@@ -97,8 +114,8 @@ def user_query_handle(request):
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
-def about(request):
-    return render(request, 'home/about.html')
+# def about(request):
+#     return render(request, 'home/about.html')
 
 
 def search(request):
@@ -127,6 +144,7 @@ def search(request):
     return render(request, "home/search.html", params)
 
 
+# This Function Is For Register A New User
 def register(request):
     if request.method == "POST":
         fname = request.POST['fname']
@@ -137,8 +155,6 @@ def register(request):
         pass2 = request.POST['password2']
         # Few Changes to For upload Files, without Django File System
         profile_picture = request.FILES.get("profile_picture")
-
-        # print(fname, lname, user_name, email, pass1, pass2)
 
         # Validation the form
         if len(user_name) < 8:
@@ -200,6 +216,7 @@ def register(request):
         return HttpResponse("404 - You are not allowed.")
 
 
+# This Function Is For Activate New User
 def activate_user(request, uidb64, token):
     try:
         uid = force_str(urlsafe_base64_decode(uidb64))
@@ -221,6 +238,7 @@ def activate_user(request, uidb64, token):
         return HttpResponse(f"Something Went Wrong, Please Inform Our Admin.")
 
 
+# Login Function
 def logged_in(request):
     if request.method == 'POST':
 
@@ -259,6 +277,7 @@ def logged_in(request):
         return HttpResponse('404 - You Are Not Allowed')
 
 
+# Logout Function
 @login_required(login_url="/")
 def logout_blog(request):
     logout(request)
@@ -273,6 +292,7 @@ def logout_blog(request):
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
+# This Function Is For Author Request From User
 @login_required(login_url="/")
 def authorRequest(request):
     if request.method == 'POST':
@@ -308,7 +328,7 @@ def authorRequest(request):
         return HttpResponse("Something Went Wrong")
 
 
-# Show All Author Request Information To Super User/Admin Only
+# Show All Author Request Information To Super User/Admin Only, Admin Accept/Reject Request
 @login_required(login_url="/")
 def author_request_handle(request):
     if request.user.is_superuser:
@@ -514,7 +534,7 @@ def password_change(request):
     return render(request, "home/password_change.html", {'fm': fm})
 
 
-#  For Reset The Password
+#  For Reset The Password/ Forget Password
 def reset_password_request(request):
     """
     :param request:
@@ -587,6 +607,7 @@ def reset_password_request(request):
     return render(request, "home/reset_password_request.html", {'fm': fm})
 
 
+# Confirmation For Reset The Password/ Forget Password
 def reset_password_confirm(request, uidb64, token):
     if request.user.is_authenticated:
         messages.error(request, "You are not allowed to reset password, while you are logged in.")
@@ -621,7 +642,6 @@ def reset_password_confirm(request, uidb64, token):
     return redirect('Home')
 
 
-# This Function Is For Handle The User's Query, Which From Contact Us Section
 
 def check_tiny(request):
     return render(request, "tinyMCE_example.html")

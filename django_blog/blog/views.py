@@ -126,8 +126,6 @@ def EditBlog(request, pid):
         blog_content = request.POST['blog-content']
         blog_summary = request.POST['blog-summary']
 
-        # print(title, category, blog_content, blog_summary)
-
         # Validation
 
         # For Title
@@ -156,8 +154,5 @@ def EditBlog(request, pid):
 
         messages.success(request, f"Blog ID: {blog_post.pno} Edit Successfully.")
         return redirect('blogPost', slug=blog_post.slug)
-    # else:
-    #     messages.error(request, "You are not Allowed here.")
-    #     return redirect('Home')
 
     return render(request, "blog/edit_blog.html", {'blog_post': blog_post})

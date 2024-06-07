@@ -4,7 +4,15 @@
 
 {% block contactactive %} active {% endblock %}
 
-{% block css %} {% endblock %}
+{% load static %}
+
+{% block css %}
+<style>
+    body {
+        background-image: url("{% static 'home/b1.jpg' %}");
+    }
+</style>
+{% endblock %}
 
 {% block body %}
 
@@ -57,3 +65,6 @@
 
 
 {% endblock %}
+
+<!-- For just Remove the Footer -->
+{% block footer %} {% endblock %}

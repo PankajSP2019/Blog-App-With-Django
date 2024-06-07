@@ -17,14 +17,15 @@
     <!-- Alert Button For Showing the Messages-->
     {% if messages %} <!-- main condition-->
         {% for message in messages %}
-            <div {% if message.tags %} class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert" {% endif %}>
+            <div {% if message.tags %} class="my-2 mx-2 alert alert-{{ message.tags }} alert-dismissible fade show" role="alert" {% endif %}>
                 <strong>Hello!</strong> {{ message }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <!-- <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button> -->
             </div>
         {% endfor %}
     {% endif %} <!-- END main condition-->
 
     <div class="container   my-4">
+
         <div class="row mb-2">
             {% for post in authors_all_blog %}
             <div class="col-md-6">

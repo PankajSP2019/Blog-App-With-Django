@@ -1,10 +1,18 @@
 <!doctype html>
 <html lang="en">
 
+
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    {% load static %}
+
     <title>{% block title %} {% endblock %}</title>
+
+    <!-- Add an icon with the title. it will show along with the title in the browser's tab -->
+    <link rel="icon" type="image/png" href="{%static 'home/x1.png' %}">
 
     {% block morelink %}  {% endblock %}
 
@@ -22,8 +30,9 @@
         integrity="sha384-Atwg2Pkwv9vp0ygtn1JAojH0nYbwNJLPhwyoVbhoPwBhjQPR5VtM2+xf0Uwh9KtT" crossorigin="anonymous">
     </script>
 
-    {% block tinyScript %} {% endblock %}
 
+    {% block tinyScript %} {% endblock %}
+    
 
     <style>
 
@@ -37,8 +46,7 @@
             position: relative;
             margin-bottom:0px; 
         }
-
-        
+       
         
         body {
         --sb-track-color: #232E33;
@@ -52,27 +60,48 @@
 
         body::-webkit-scrollbar-track {
         background: var(--sb-track-color);
-        border-radius: 20px;
+        border-radius: 3px;
         }
 
         body::-webkit-scrollbar-thumb {
         background: var(--sb-thumb-color);
-        border-radius: 20px;
-        border: 1px solid #232E33;
+        border-radius: 3px;
+        
         }
 
         @supports not selector(::-webkit-scrollbar) {
-            body {
-                scrollbar-color: var(--sb-thumb-color)
-                                var(--sb-track-color);
-            }
+        body {
+            scrollbar-color: var(--sb-thumb-color)
+                            var(--sb-track-color);
         }
+        }
+
+        #preloader{
+            background: #000 url("{% static 'home/loader2.gif' %}")no-repeat center center ;
+            background-size: 25%;
+            height: 100vh;
+            width: 100%;
+            position: fixed;
+            z-index: 100;
+        }
+
     </style>
 
     {% block css %} {% endblock %}
 </head>
 
-<body>
+<!-- For Right Click Disable -->
+<!-- <body oncontextmenu="return false;"> -->
+
+<body >
+    <!-- Preloader -->
+    <div id="preloader">
+        <div class="lds-ripple">
+            <div></div>
+            <div></div>
+        </div>
+    </div>
+
     <!-- Nav Bar Start -->
     <nav class="navbar navbar-expand-lg bg-primary bg-body-tertiary sticky-top" data-bs-theme="dark">
         <div class="container-fluid">
@@ -91,9 +120,9 @@
                         <a class="nav-link {% block contactactive  %}{% endblock %} " href="/contact">Contact</a>
                     </li>
 
-                    <li class="nav-item">
+                    <!-- <li class="nav-item">
                         <a class="nav-link {% block aboutactive  %}{% endblock %}" href="/about">About Us</a>
-                    </li>
+                    </li> -->
                     <li class="nav-item">
                         <a class="nav-link {% block blogactive  %}{% endblock %}" href="/blog">Blog</a>
                     </li>
@@ -420,6 +449,13 @@
 
 
         });
+    </script>
+
+    <script>
+        var loader = document.getElementById("preloader");
+        window.addEventListener("load", function(){
+            loader.style.display = "none";
+        })
     </script>
 
 
